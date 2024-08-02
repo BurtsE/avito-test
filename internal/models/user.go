@@ -9,3 +9,7 @@ type EnumRole interface{ isEnumRole() }
 
 type user struct{ EnumRole }
 type moderator struct{ EnumRole }
+
+type User struct {
+	Role  EnumRole `json:"role,omitempty"`
+}
