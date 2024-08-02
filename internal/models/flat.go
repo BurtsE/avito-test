@@ -1,7 +1,7 @@
 package models
 
-type Appartment struct {
+type Flat struct {
 	Number     uint32
 	Cost       uint64
-	RoomNumber uint32
+	FlatNumber uint32
 }
