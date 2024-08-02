@@ -1,4 +1,4 @@
-package storage
+package house
 
 import "avito-test/internal/models"
 

@@ -1,9 +1,9 @@
-package house
+package postgres
 
 import (
 	"avito-test/internal/config"
 	"avito-test/internal/models"
-	def "avito-test/internal/storage"
+	def "avito-test/internal/storage/house"
 	"database/sql"
 	"fmt"
 
