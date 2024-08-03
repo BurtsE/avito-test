@@ -2,7 +2,6 @@ package router
 
 import (
 	"avito-test/internal/converter"
-	"encoding/json"
 	"log"
 	"strconv"
 
@@ -22,7 +21,7 @@ func registerHouseApi(r *Router) {
 
 func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 	data := ctx.Request.Body()
-	builder, err := converter.BuilderFromRawData(data)
+	builder, err := converter.HouseBuilderFromRawData(data)
 	if err != nil {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
@@ -35,15 +34,7 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-
-	responce, err := json.Marshal(house)
-	if err != nil {
-		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
-		return
-	}
-	ctx.Response.AppendBody(responce)
-
+	h.r.sendResponce(ctx, house)
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 	idStr := ctx.UserValue("id").(string)
@@ -61,14 +52,7 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-
-	responce, err := json.Marshal(house)
-	if err != nil {
-		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
-		return
-	}
-	ctx.Response.AppendBody(responce)
+	h.r.sendResponce(ctx, house)
 
 }
 func (h *houseImpl) subscribe(ctx *fasthttp.RequestCtx) {

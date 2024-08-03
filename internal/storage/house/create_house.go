@@ -6,7 +6,7 @@ import (
 )
 
 func (r *repository) CreateHouse(builder models.HouseBuilder) (*models.House, error) {
-	house := converter.HouseFromBuilder(builder)
+	house := converter.HouseFromHouseBuilder(builder)
 	query := `
 		INSERT INTO houses (adress, construction_date, developer, initialization_date, last_update_time)
 		VALUES ($1, $2, $3, $4, $5)

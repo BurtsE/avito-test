@@ -5,4 +5,7 @@ import "avito-test/internal/models"
 type HouseStorage interface {
 	CreateHouse(models.HouseBuilder) (*models.House, error)
 	GetHouseDesc(uint64) (*models.House, error)
+
+	CreateFlat(models.FlatBuilder, string) (*models.Flat, error)
+	UpdateFlatStatus(uint64, string)(*models.Flat, error)
 }

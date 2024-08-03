@@ -3,6 +3,7 @@ package router
 import (
 	"avito-test/internal/config"
 	"avito-test/internal/service"
+	"encoding/json"
 
 	"github.com/fasthttp/router"
 	"github.com/sirupsen/logrus"
@@ -53,4 +54,14 @@ func (r *Router) loggerDecorator(handler fasthttp.RequestHandler) fasthttp.Reque
 		handler(ctx)
 		r.logger.Printf("api request: %s ;status code: %d", ctx.Path(), ctx.Response.StatusCode())
 	}
+}
+
+func (r *Router) sendResponce(ctx *fasthttp.RequestCtx, a interface{}) {
+	responce, err := json.Marshal(a)
+	if err != nil {
+		r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
+	ctx.Response.AppendBody(responce)
 }

@@ -1,22 +1,23 @@
 package models
 
 var (
-	OnModerate EnumRole = &onModerate{}
-	Created    EnumRole = &created{}
-	Approved   EnumRole = &approved{}
-	Declined   EnumRole = &declined{}
+	OnModerate ModerationStatus = &onModerate{}
+	Created    ModerationStatus = &created{}
+	Approved   ModerationStatus = &approved{}
+	Declined   ModerationStatus = &declined{}
 )
 
 type Flat struct {
-	Id         uint32
-	Cost       uint64
-	FlatNumber uint32
-	Status     FlatStatus
+	Id         uint64
+	HouseId    uint64
+	Price      uint64
+	RoomNumber byte
+	Status     ModerationStatus
 }
 
-type FlatStatus interface{ isEnumStatus() }
+type ModerationStatus interface{ isEnumStatus() }
 
-type onModerate struct{ EnumRole }
-type created struct{ EnumRole }
-type approved struct{ EnumRole }
-type declined struct{ EnumRole }
+type onModerate struct{ ModerationStatus }
+type created struct{ ModerationStatus }
+type approved struct{ ModerationStatus }
+type declined struct{ ModerationStatus }

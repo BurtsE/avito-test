@@ -1,19 +1,11 @@
 package house
 
-import (
-	"avito-test/internal/config"
-	def "avito-test/internal/service"
-	storage "avito-test/internal/storage"
-)
+import "avito-test/internal/models"
 
-var _ def.HouseService = (*service)(nil)
-
-type service struct {
-	houseStorage storage.HouseStorage
+func (s *service) GetHouseDesc(uuid uint64) (*models.House, error) {
+	return s.houseStorage.GetHouseDesc(uuid)
 }
 
-func NewService(houseStorage storage.HouseStorage, cfg *config.Config) *service {
-	return &service{
-		houseStorage: houseStorage,
-	}
+func (s *service) CreateHouse(builder models.HouseBuilder) (*models.House, error) {
+	return s.houseStorage.CreateHouse(builder)
 }
