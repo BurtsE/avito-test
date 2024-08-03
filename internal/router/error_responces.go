@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/valyala/fasthttp"
 )
@@ -14,6 +15,7 @@ func internalServerErrorResponce(ctx *fasthttp.RequestCtx) {
 		"request_id": %d,
 		"code": %d
 	}`, "что-то пошло не так", ctx.ID(), 500))
+	ctx.Response.Header.Add("Retry-After", time.Minute.String())
 }
 
 func invalidDataResponce(ctx *fasthttp.RequestCtx) {
