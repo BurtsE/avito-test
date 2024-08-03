@@ -3,6 +3,8 @@ package router
 import (
 	"avito-test/internal/converter"
 	"encoding/json"
+	"log"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 )
@@ -26,7 +28,6 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-	h.r.logger.Println(builder)
 
 	house, err := h.r.houseService.CreateHouse(builder)
 	if err != nil {
@@ -34,7 +35,7 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-	h.r.logger.Println(house)
+
 	responce, err := json.Marshal(house)
 	if err != nil {
 		h.r.logger.Println(err)
@@ -45,7 +46,29 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
-	h.r.houseService.GetHouseDesc()
+	idStr := ctx.UserValue("id").(string)
+	uuid, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		h.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
+	log.Println(uuid)
+
+	house, err := h.r.houseService.GetHouseDesc(uuid)
+	if err != nil {
+		h.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
+
+	responce, err := json.Marshal(house)
+	if err != nil {
+		h.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
+	ctx.Response.AppendBody(responce)
 
 }
 func (h *houseImpl) subscribe(ctx *fasthttp.RequestCtx) {

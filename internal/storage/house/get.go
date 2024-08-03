@@ -8,12 +8,12 @@ func (r *repository) GetHouseDesc(uuid uint64) (*models.House, error) {
 		FROM houses
 		WHERE uuid=$1
 	`
-	house := &models.House{}
+	house := &models.House{UUID: uuid}
 	row := r.db.QueryRow(query, uuid)
-	if row.Err() != nil {
-		return nil, row.Err()
-	}
-	row.Scan(&house.UUID, &house.Address, &house.ConstructionDate,
+	err := row.Scan(&house.Address, &house.ConstructionDate,
 		&house.Developer, &house.InitializationDate, &house.LastUpdateTime)
+	if err != nil {
+		return nil, err
+	}
 	return house, nil
 }

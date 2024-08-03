@@ -19,7 +19,6 @@ func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
 }
 
 func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
-	id := ctx.UserValue("id")
-	f.r.logger.Println(id)
+
 
 }
