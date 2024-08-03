@@ -16,3 +16,8 @@ type ValidationService interface {
 	ValidateHouse(uint64) error
 	ValidateFlat(uint64) error
 }
+
+type AuthentificationService interface {
+	Authorize()
+	CheckAuthorization()
+}
