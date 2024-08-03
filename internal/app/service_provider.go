@@ -4,8 +4,8 @@ import (
 	"avito-test/internal/config"
 	router "avito-test/internal/router"
 	"avito-test/internal/service"
-	houseStorage "avito-test/internal/storage/house"
-	houseStorageInstance "avito-test/internal/storage/house/postgres"
+	houseStorage "avito-test/internal/storage"
+	houseStorageInstance "avito-test/internal/storage/house"
 	houseService "avito-test/internal/service/house"
 	"log"
 
