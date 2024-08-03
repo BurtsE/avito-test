@@ -5,13 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 func HouseFromBuilder(builder models.HouseBuilder) models.House {
 	house := models.House{
-		UUID:      uuid.NewString(),
 		Address:   *builder.Address,
 		Developer: *builder.Developer,
 	}

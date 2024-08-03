@@ -3,7 +3,7 @@ package models
 import "time"
 
 type House struct {
-	UUID               string    `json:"uuid"`
+	UUID               uint64    `json:"uuid"`
 	Address            string    `json:"address"`
 	ConstructionDate   time.Time `json:"construction_date"`
 	Developer          string    `json:"developer,omitempty"`
