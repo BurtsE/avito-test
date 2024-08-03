@@ -2,7 +2,8 @@ package router
 
 import (
 	"avito-test/internal/converter"
-	"log"
+	serviceErrors "avito-test/internal/service_errors"
+	"errors"
 	"strconv"
 
 	"github.com/valyala/fasthttp"
@@ -20,20 +21,36 @@ func registerHouseApi(r *Router) {
 }
 
 func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
+	var (
+
+	)
 	data := ctx.Request.Body()
 	builder, err := converter.HouseBuilderFromRawData(data)
 	if err != nil {
+		h.r.logger.Println(err)
+		invalidDataResponce(ctx)
+		return
+	}
+	
+	house, err := h.r.houseService.CreateHouse(builder)
+	if errors.As(err, &serviceErrors.ValidationError{}) {
+		h.r.logger.Println(err)
+		invalidDataResponce(ctx)
+		return
+	}
+
+	if errors.As(err, &serviceErrors.DatabaseError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
 	}
 
-	house, err := h.r.houseService.CreateHouse(builder)
-	if err != nil {
+	if errors.As(err, &serviceErrors.AuthError{}) {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		unAuthorized(ctx)
 		return
 	}
+
 	h.r.sendResponce(ctx, house)
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
@@ -41,17 +58,29 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 	uuid, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		invalidDataResponce(ctx)
 		return
 	}
-	log.Println(uuid)
 
 	house, err := h.r.houseService.GetHouseDesc(uuid)
-	if err != nil {
+	if errors.As(err, &serviceErrors.ValidationError{}) {
+		h.r.logger.Println(err)
+		invalidDataResponce(ctx)
+		return
+	}
+
+	if errors.As(err, &serviceErrors.DatabaseError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
 	}
+
+	if errors.As(err, &serviceErrors.AuthError{}) {
+		h.r.logger.Println(err)
+		unAuthorized(ctx)
+		return
+	}
+	
 	h.r.sendResponce(ctx, house)
 
 }

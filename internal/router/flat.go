@@ -2,6 +2,8 @@ package router
 
 import (
 	"avito-test/internal/converter"
+	serviceErrors "avito-test/internal/service_errors"
+	"errors"
 
 	"github.com/valyala/fasthttp"
 )
@@ -21,15 +23,29 @@ func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
 	flatBuilder, err := converter.FlatBuilderFromRawData(data)
 	if err != nil {
 		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		invalidDataResponce(ctx)
 		return
 	}
+	
 	flat, err := f.r.houseService.CreateFlat(flatBuilder)
-	if err != nil {
+	if errors.As(err, &serviceErrors.ValidationError{}) {
+		f.r.logger.Println(err)
+		invalidDataResponce(ctx)
+		return
+	}
+
+	if errors.As(err, &serviceErrors.DatabaseError{}) {
 		f.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
 	}
+
+	if errors.As(err, &serviceErrors.AuthError{}) {
+		f.r.logger.Println(err)
+		unAuthorized(ctx)
+		return
+	}
+
 	f.r.sendResponce(ctx, flat)
 }
 
@@ -38,14 +54,27 @@ func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
 	status, err := converter.FlatStatusFromRawData(data)
 	if err != nil {
 		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		invalidDataResponce(ctx)
 		return
 	}
 	flat, err := f.r.houseService.UpdateFlatStatus(status)
-	if err != nil {
+	if errors.As(err, &serviceErrors.ValidationError{}) {
+		f.r.logger.Println(err)
+		invalidDataResponce(ctx)
+		return
+	}
+
+	if errors.As(err, &serviceErrors.DatabaseError{}) {
 		f.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
 	}
+
+	if errors.As(err, &serviceErrors.AuthError{}) {
+		f.r.logger.Println(err)
+		unAuthorized(ctx)
+		return
+	}
+
 	f.r.sendResponce(ctx, flat)
 }

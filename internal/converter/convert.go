@@ -7,7 +7,49 @@ import (
 	"time"
 )
 
-var invalidJsonError error = errors.New("invalid json")
+var (
+	errInvalidJson   error = errors.New("invalid json")
+	errUnknownStatus error = errors.New("unknown status")
+)
+
+func HouseBuilderFromRawData(data []byte) (models.HouseBuilder, error) {
+	builder := models.HouseBuilder{}
+	err := json.Unmarshal(data, &builder)
+	if err != nil {
+		return builder, errInvalidJson
+	}
+	if builder.ConstructionDate == nil || builder.Address == nil {
+		return builder, errInvalidJson
+	}
+	if builder.Developer == nil {
+		builder.Developer = new(string)
+	}
+	return builder, nil
+}
+
+func FlatBuilderFromRawData(data []byte) (models.FlatBuilder, error) {
+	builder := models.FlatBuilder{}
+	err := json.Unmarshal(data, &builder)
+	if err != nil {
+		return builder, errInvalidJson
+	}
+	if builder.HouseId == nil || builder.Price == nil || builder.Rooms == nil {
+		return builder, errInvalidJson
+	}
+	return builder, nil
+}
+
+func FlatStatusFromRawData(data []byte) (models.FlatStatus, error) {
+	status := models.FlatStatus{}
+	err := json.Unmarshal(data, &status)
+	if err != nil {
+		return status, err
+	}
+	if status.Id == nil || status.Value == nil {
+		return status, errInvalidJson
+	}
+	return status, nil
+}
 
 func HouseFromHouseBuilder(builder models.HouseBuilder) models.House {
 	house := models.House{
@@ -23,33 +65,6 @@ func HouseFromHouseBuilder(builder models.HouseBuilder) models.House {
 	return house
 }
 
-func HouseBuilderFromRawData(data []byte) (models.HouseBuilder, error) {
-	builder := models.HouseBuilder{}
-	err := json.Unmarshal(data, &builder)
-	if err != nil {
-		return builder, err
-	}
-	if builder.ConstructionDate == nil || builder.Address == nil {
-		return builder, invalidJsonError
-	}
-	if builder.Developer == nil {
-		builder.Developer = new(string)
-	}
-	return builder, nil
-}
-
-func FlatBuilderFromRawData(data []byte) (models.FlatBuilder, error) {
-	builder := models.FlatBuilder{}
-	err := json.Unmarshal(data, &builder)
-	if err != nil {
-		return builder, err
-	}
-	if builder.HouseId == nil || builder.Price == nil || builder.Rooms == nil {
-		return builder, invalidJsonError
-	}
-	return builder, nil
-}
-
 func FlatFromFlatBuilder(builder models.FlatBuilder) models.Flat {
 	flat := models.Flat{
 		HouseId:    *builder.HouseId,
@@ -57,18 +72,6 @@ func FlatFromFlatBuilder(builder models.FlatBuilder) models.Flat {
 		RoomNumber: *builder.Rooms,
 	}
 	return flat
-}
-
-func FlatStatusFromRawData(data []byte) (models.FlatStatus, error) {
-	status := models.FlatStatus{}
-	err := json.Unmarshal(data, &status)
-	if err != nil {
-		return status, err
-	}
-	if status.Id == nil || status.Value == nil {
-		return status, invalidJsonError
-	}
-	return status, nil
 }
 
 func ModerationValueFromString(s string) (models.ModerationStatus, error) {
@@ -82,7 +85,7 @@ func ModerationValueFromString(s string) (models.ModerationStatus, error) {
 	case "declined":
 		return models.Declined, nil
 	default:
-		return nil, errors.New("unknown status")
+		return nil, errUnknownStatus
 	}
 }
 
@@ -97,6 +100,6 @@ func StringFromModerationValue(status models.ModerationStatus) (string, error) {
 	case models.Declined:
 		return "declined", nil
 	default:
-		return "", errors.New("unknown status")
+		return "", errUnknownStatus
 	}
 }
