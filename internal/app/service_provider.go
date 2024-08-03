@@ -13,6 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// TODO auth service, repo init
+
 type serviceProvider struct {
 	cfg               *config.Config
 	houseStorage      storages.HouseStorage
@@ -79,7 +81,7 @@ func (s *serviceProvider) ValidationService() service.ValidationService {
 
 func (s *serviceProvider) Router() *router.Router {
 	if s.router == nil {
-		s.router = router.NewRouter(logrus.New(), s.Config(), s.HouseService(), s.ValidationService())
+		s.router = router.NewRouter(logrus.New(), s.Config(), s.HouseService(), s.ValidationService(), nil) // nil
 	}
 	return s.router
 }

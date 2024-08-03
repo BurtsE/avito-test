@@ -62,7 +62,7 @@ func (r *Router) loggerDecorator(handler fasthttp.RequestHandler) fasthttp.Reque
 		defer func() {
 			if recover := recover(); recover != nil {
 				r.logger.Println("Recovered in f", recover)
-				ctx.SetStatusCode(500)
+				internalServerErrorResponce(ctx)
 			}
 		}()
 		handler(ctx)
