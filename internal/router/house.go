@@ -1,7 +1,6 @@
 package router
 
 import (
-	"avito-test/internal/converter"
 	serviceErrors "avito-test/internal/service_errors"
 	"errors"
 	"strconv"
@@ -16,30 +15,27 @@ type houseImpl struct {
 func registerHouseApi(r *Router) {
 	houseImpl := houseImpl{r}
 	r.router.POST("/house/create", houseImpl.createHouse)
-	r.router.GET("/house/{id}", houseImpl.getHouseData)
+	r.router.GET("/house/{id:[0-9]*}", houseImpl.getHouseData)
 	r.router.POST("/house/{id}/subscribe", houseImpl.subscribe)
 }
 
 func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
-	var (
-
-	)
 	data := ctx.Request.Body()
-	builder, err := converter.HouseBuilderFromRawData(data)
-	if err != nil {
-		h.r.logger.Println(err)
-		invalidDataResponce(ctx)
-		return
-	}
-	
-	house, err := h.r.houseService.CreateHouse(builder)
+	builder, err := h.r.validationService.ValidateHouseData(data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		h.r.logger.Println(err)
 		invalidDataResponce(ctx)
 		return
 	}
+	if errors.As(err, &serviceErrors.ServerError{}) {
+		h.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
 
-	if errors.As(err, &serviceErrors.DatabaseError{}) {
+	house, err := h.r.houseService.CreateHouse(builder)
+
+	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
@@ -55,10 +51,17 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 	idStr := ctx.UserValue("id").(string)
-	uuid, err := strconv.ParseUint(idStr, 10, 64)
-	if err != nil {
+	uuid, _ := strconv.ParseUint(idStr, 10, 64)
+
+	err := h.r.validationService.ValidateHouse(uuid)
+	if errors.As(err, &serviceErrors.ValidationError{}) {
 		h.r.logger.Println(err)
 		invalidDataResponce(ctx)
+		return
+	}
+	if errors.As(err, &serviceErrors.ServerError{}) {
+		h.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
 		return
 	}
 
@@ -69,7 +72,7 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	if errors.As(err, &serviceErrors.DatabaseError{}) {
+	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
@@ -80,7 +83,7 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 		unAuthorized(ctx)
 		return
 	}
-	
+
 	h.r.sendResponce(ctx, house)
 
 }

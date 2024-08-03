@@ -2,11 +2,11 @@ package service_errors
 
 import "fmt"
 
-type DatabaseError struct {
+type ServerError struct {
 	err error
 }
 
-func (e DatabaseError) Error() string {
+func (e ServerError) Error() string {
 	return fmt.Sprintf("database error: %v", e.err)
 }
 

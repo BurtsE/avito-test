@@ -7,5 +7,12 @@ type HouseService interface {
 	GetHouseDesc(uint64) (*models.House, error)
 
 	CreateFlat(models.FlatBuilder) (*models.Flat, error)
-	UpdateFlatStatus(models.FlatStatus)(*models.Flat, error)
+	UpdateFlatStatus(models.FlatStatus) (*models.Flat, error)
+}
+type ValidationService interface {
+	ValidateFlatBuilderData([]byte) (models.FlatBuilder, error)
+	ValidateFlatStatusData([]byte) (models.FlatStatus, error)
+	ValidateHouseData([]byte) (models.HouseBuilder, error)
+	ValidateHouse(uint64) error
+	ValidateFlat(uint64) error
 }

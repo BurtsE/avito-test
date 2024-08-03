@@ -3,7 +3,7 @@ package house
 import (
 	"avito-test/internal/config"
 	def "avito-test/internal/service"
-	storage "avito-test/internal/storage"
+	"avito-test/internal/storage"
 )
 
 var _ def.HouseService = (*service)(nil)

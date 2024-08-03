@@ -11,22 +11,26 @@ import (
 )
 
 type Router struct {
-	router       *router.Router
-	srv          *fasthttp.Server
-	logger       *logrus.Logger
-	houseService service.HouseService
-	port         string
+	router            *router.Router
+	srv               *fasthttp.Server
+	logger            *logrus.Logger
+	houseService      service.HouseService
+	validationService service.ValidationService
+	port              string
 }
 
-func NewRouter(logger *logrus.Logger, cfg *config.Config, houseService service.HouseService) *Router {
+func NewRouter(logger *logrus.Logger, cfg *config.Config, houseService service.HouseService,
+	validationService service.ValidationService) *Router {
 	router := router.New()
 	srv := &fasthttp.Server{}
 	r := &Router{
-		router:       router,
-		logger:       logger,
-		houseService: houseService,
-		port:         cfg.Service.Port,
-		srv:          srv,
+		router:            router,
+		logger:            logger,
+		houseService:      houseService,
+		validationService: validationService,
+
+		port: cfg.Service.Port,
+		srv:  srv,
 	}
 	srv.Handler = r.loggerDecorator(router.Handler)
 
@@ -51,6 +55,12 @@ func statusHandler(ctx *fasthttp.RequestCtx) {
 
 func (r *Router) loggerDecorator(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
+		defer func() {
+			if recover := recover(); r != nil {
+				r.logger.Println("Recovered in f", recover)
+				ctx.SetStatusCode(500)
+			}
+		}()
 		handler(ctx)
 		r.logger.Printf("api request: %s ;status code: %d", ctx.Path(), ctx.Response.StatusCode())
 	}

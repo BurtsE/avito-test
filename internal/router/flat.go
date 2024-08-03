@@ -1,7 +1,6 @@
 package router
 
 import (
-	"avito-test/internal/converter"
 	serviceErrors "avito-test/internal/service_errors"
 	"errors"
 
@@ -20,21 +19,21 @@ func registerFlatApi(r *Router) {
 
 func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
 	data := ctx.Request.Body()
-	flatBuilder, err := converter.FlatBuilderFromRawData(data)
-	if err != nil {
-		f.r.logger.Println(err)
-		invalidDataResponce(ctx)
-		return
-	}
-	
-	flat, err := f.r.houseService.CreateFlat(flatBuilder)
+	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
 		invalidDataResponce(ctx)
 		return
 	}
+	if errors.As(err, &serviceErrors.ServerError{}) {
+		f.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
 
-	if errors.As(err, &serviceErrors.DatabaseError{}) {
+	flat, err := f.r.houseService.CreateFlat(flatBuilder)
+
+	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
@@ -51,20 +50,20 @@ func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
 
 func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
 	data := ctx.Request.Body()
-	status, err := converter.FlatStatusFromRawData(data)
-	if err != nil {
-		f.r.logger.Println(err)
-		invalidDataResponce(ctx)
-		return
-	}
-	flat, err := f.r.houseService.UpdateFlatStatus(status)
+	status, err := f.r.validationService.ValidateFlatStatusData(data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
 		invalidDataResponce(ctx)
 		return
 	}
+	if errors.As(err, &serviceErrors.ServerError{}) {
+		f.r.logger.Println(err)
+		internalServerErrorResponce(ctx)
+		return
+	}
 
-	if errors.As(err, &serviceErrors.DatabaseError{}) {
+	flat, err := f.r.houseService.UpdateFlatStatus(status)
+	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return

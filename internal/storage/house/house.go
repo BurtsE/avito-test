@@ -1,35 +1,38 @@
 package house
 
 import (
-	"avito-test/internal/config"
-	def "avito-test/internal/storage"
-	"database/sql"
-	"fmt"
-
-	_ "github.com/lib/pq"
+	"avito-test/internal/converter"
+	"avito-test/internal/models"
 )
 
-var _ def.HouseStorage = (*repository)(nil)
-
-type repository struct {
-	db *sql.DB
-}
-
-func NewRepository(cfg *config.Config) (*repository, error) {
-	DSN := fmt.Sprintf(
-		"dbname=%s user=%s password=%s host=%s port=%s sslmode=%s",
-		cfg.DB,
-		cfg.User,
-		cfg.Password,
-		cfg.Host,
-		cfg.Postgres.Port,
-		cfg.Sslmode,
-	)
-	db, _ := sql.Open("postgres", DSN)
-	if err := db.Ping(); err != nil {
+func (r *repository) CreateHouse(builder models.HouseBuilder) (*models.House, error) {
+	house := converter.HouseFromHouseBuilder(builder)
+	query := `
+		INSERT INTO houses (adress, construction_date, developer, initialization_date, last_update_time)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING uuid
+	`
+	row := r.db.QueryRow(query, house.Address, house.ConstructionDate,
+		house.Developer, house.InitializationDate, house.LastUpdateTime)
+	err := row.Scan(&house.UUID)
+	if err != nil {
 		return nil, err
 	}
-	return &repository{
-		db: db,
-	}, nil
+	return &house, nil
+}
+
+func (r *repository) GetHouseDesc(uuid uint64) (*models.House, error) {
+	query := `
+		SELECT adress, construction_date, developer, initialization_date, last_update_time
+		FROM houses
+		WHERE uuid=$1
+	`
+	house := &models.House{UUID: uuid}
+	row := r.db.QueryRow(query, uuid)
+	err := row.Scan(&house.Address, &house.ConstructionDate,
+		&house.Developer, &house.InitializationDate, &house.LastUpdateTime)
+	if err != nil {
+		return nil, err
+	}
+	return house, nil
 }
