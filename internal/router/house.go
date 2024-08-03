@@ -45,6 +45,7 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
+	h.r.houseService.GetHouseDesc()
 
 }
 func (h *houseImpl) subscribe(ctx *fasthttp.RequestCtx) {
