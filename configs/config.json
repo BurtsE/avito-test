@@ -1,0 +1,12 @@
+{
+    "postgres": {
+        "host": "localhost",
+        "port": "5432",
+        "db": "avito-test",
+        "max_conns": 1,
+        "sslmode": "disable"
+    },
+    "service": {
+        "port": ":8000"
+    }
+}
