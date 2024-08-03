@@ -9,13 +9,14 @@ type authImpl struct {
 func registerAuthApi(r *Router) {
 	authImpl := authImpl{r: r}
 	r.router.GET("/dummyLogin", authImpl.dummyLogin)
-	r.router.GET("/login", authImpl.login)
-	r.router.GET("/register", authImpl.register)
+	r.router.POST("/login", authImpl.login)
+	r.router.POST("/register", authImpl.register)
 
 }
 
 func (a *authImpl) dummyLogin(ctx *fasthttp.RequestCtx) {
-
+	role := ctx.QueryArgs().Peek("role")
+	a.r.logger.Println(string(role))
 }
 
 func (a *authImpl) login(ctx *fasthttp.RequestCtx) {

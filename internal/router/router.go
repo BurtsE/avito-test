@@ -16,11 +16,15 @@ type Router struct {
 	logger            *logrus.Logger
 	houseService      service.HouseService
 	validationService service.ValidationService
+	authService       service.AuthentificationService
 	port              string
 }
 
-func NewRouter(logger *logrus.Logger, cfg *config.Config, houseService service.HouseService,
-	validationService service.ValidationService) *Router {
+func NewRouter(logger *logrus.Logger, cfg *config.Config,
+	houseService service.HouseService,
+	validationService service.ValidationService,
+	authService service.AuthentificationService,
+) *Router {
 	router := router.New()
 	srv := &fasthttp.Server{}
 	r := &Router{
@@ -28,9 +32,9 @@ func NewRouter(logger *logrus.Logger, cfg *config.Config, houseService service.H
 		logger:            logger,
 		houseService:      houseService,
 		validationService: validationService,
-
-		port: cfg.Service.Port,
-		srv:  srv,
+		authService:       authService,
+		port:              cfg.Service.Port,
+		srv:               srv,
 	}
 	srv.Handler = r.loggerDecorator(router.Handler)
 
@@ -56,7 +60,7 @@ func statusHandler(ctx *fasthttp.RequestCtx) {
 func (r *Router) loggerDecorator(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		defer func() {
-			if recover := recover(); r != nil {
+			if recover := recover(); recover != nil {
 				r.logger.Println("Recovered in f", recover)
 				ctx.SetStatusCode(500)
 			}

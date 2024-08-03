@@ -7,7 +7,6 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-// TODO 500 code fix
 func internalServerErrorResponce(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(500)
 	ctx.Response.AppendBody(fmt.Appendf([]byte{}, `{
