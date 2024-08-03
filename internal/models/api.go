@@ -1,9 +1,7 @@
 package models
 
-type HouseCreator struct {
-	Adress       string `json:"adress,omitempty"`
-	CreationDate uint64 `json:"year,omitempty"`
-	Developer    string `json:"developer"`
+type HouseBuilder struct {
+	Address          *string `json:"address"`
+	ConstructionDate *int    `json:"year"`
+	Developer        *string `json:"developer,omitempty"`
 }
-
-
