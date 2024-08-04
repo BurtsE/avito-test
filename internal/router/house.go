@@ -41,12 +41,6 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	if errors.As(err, &serviceErrors.AuthError{}) {
-		h.r.logger.Println(err)
-		unAuthorized(ctx)
-		return
-	}
-
 	h.r.sendResponce(ctx, house)
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
@@ -66,21 +60,9 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 	}
 
 	house, err := h.r.houseService.GetHouseDesc(uuid)
-	if errors.As(err, &serviceErrors.ValidationError{}) {
-		h.r.logger.Println(err)
-		invalidDataResponce(ctx)
-		return
-	}
-
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
-		return
-	}
-
-	if errors.As(err, &serviceErrors.AuthError{}) {
-		h.r.logger.Println(err)
-		unAuthorized(ctx)
 		return
 	}
 

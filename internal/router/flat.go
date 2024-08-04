@@ -39,12 +39,6 @@ func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	if errors.As(err, &serviceErrors.AuthError{}) {
-		f.r.logger.Println(err)
-		unAuthorized(ctx)
-		return
-	}
-
 	f.r.sendResponce(ctx, flat)
 }
 
@@ -66,12 +60,6 @@ func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
-		return
-	}
-
-	if errors.As(err, &serviceErrors.AuthError{}) {
-		f.r.logger.Println(err)
-		unAuthorized(ctx)
 		return
 	}
 
