@@ -20,4 +20,5 @@ type ValidationService interface {
 
 type AuthentificationService interface {
 	DummyAuthorize(models.EnumRole) (string, error)
+	CheckAuthorization([]byte) (models.EnumRole, error)
 }

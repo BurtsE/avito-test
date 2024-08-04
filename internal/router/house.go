@@ -50,6 +50,7 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 	h.r.sendResponce(ctx, house)
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
+
 	idStr := ctx.UserValue("id").(string)
 	uuid, _ := strconv.ParseUint(idStr, 10, 64)
 

@@ -8,6 +8,7 @@ import (
 	"avito-test/internal/storage"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/pkg/errors"
@@ -24,7 +25,7 @@ type service struct {
 func NewService(userStorage storage.UserStorage, cfg *config.Config) *service {
 	return &service{
 		storage:      userStorage,
-		jwtSecretKey: []byte("javainuse-secret-key"),
+		jwtSecretKey: []byte(`some-private-key`),
 		method:       jwt.GetSigningMethod("HS256"),
 	}
 }
@@ -46,15 +47,34 @@ func (s *service) DummyAuthorize(role models.EnumRole) (string, error) {
 	if err := json.Unmarshal([]byte(jstr), &claims); err != nil {
 		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-
+	log.Println(claims)
 	token := jwt.NewWithClaims(s.method, claims)
-	signedToken, err := token.SignedString(s.jwtSecretKey)
+	tokenString, err := token.SignedString(s.jwtSecretKey)
 	if err != nil {
 		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-	return fmt.Sprintf(`{"token":"%s"}`, signedToken), nil
+
+	return fmt.Sprintf(`{"token":"%s"}`, tokenString), nil
 }
 
-func (s *service) CheckAuthorization(token []byte) error {
-	return nil
+func (s *service) CheckAuthorization(data []byte) (models.EnumRole, error) {
+	token, err := jwt.Parse(string(data), func(t *jwt.Token) (interface{}, error) {
+		return s.jwtSecretKey, nil
+	})
+	if err != nil {
+		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+	}
+	val, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+	}
+
+	switch val["role"] {
+	case "user":
+		return models.UserRole, nil
+	case "moderator":
+		return models.ModeratorRole, nil
+	default:
+		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+	}
 }
