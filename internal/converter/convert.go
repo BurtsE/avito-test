@@ -51,6 +51,18 @@ func FlatStatusFromRawData(data []byte) (models.FlatStatus, error) {
 	return status, nil
 }
 
+func DummyUserFromRawData(data []byte) (models.DummyAuth, error) {
+	user := models.DummyAuth{}
+	err := json.Unmarshal(data, &user)
+	if err != nil {
+		return user, err
+	}
+	if user.Role == nil {
+		return user, errInvalidJson
+	}
+	return user, nil
+}
+
 func HouseFromHouseBuilder(builder models.HouseBuilder) models.House {
 	house := models.House{
 		Address:   *builder.Address,

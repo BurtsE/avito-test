@@ -15,9 +15,9 @@ type ValidationService interface {
 	ValidateHouseData([]byte) (models.HouseBuilder, error)
 	ValidateHouse(uint64) error
 	ValidateFlat(uint64) error
+	ValidateDummyUserData([]byte) (models.EnumRole, error)
 }
 
 type AuthentificationService interface {
-	Authorize()
-	CheckAuthorization()
+	DummyAuthorize(models.EnumRole) (string, error)
 }

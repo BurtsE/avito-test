@@ -77,3 +77,14 @@ func (s *service) ValidateFlat(uuid uint64) error {
 	}
 	return nil
 }
+
+func (s *service) ValidateDummyUserData(data []byte) (models.EnumRole, error) {
+	switch string(data) {
+	case "user":
+		return models.UserRole, nil
+	case "moderator":
+		return models.ModeratorRole, nil
+	default:
+		return nil, errors.Wrap(serviceErrors.ValidationError{}, "role does not exist")
+	}
+}

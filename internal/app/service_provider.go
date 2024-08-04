@@ -4,9 +4,11 @@ import (
 	"avito-test/internal/config"
 	router "avito-test/internal/router"
 	"avito-test/internal/service"
+	userService "avito-test/internal/service/auth"
 	houseService "avito-test/internal/service/house"
 	validationService "avito-test/internal/service/validation"
 	storages "avito-test/internal/storage"
+	userStorageInstance "avito-test/internal/storage/auth"
 	houseStorageInstance "avito-test/internal/storage/house"
 	"log"
 
@@ -21,6 +23,8 @@ type serviceProvider struct {
 	validationStorage storages.ValidationStorage
 	houseService      service.HouseService
 	validationService service.ValidationService
+	userService       service.AuthentificationService
+	userStorage       storages.UserStorage
 	router            *router.Router
 }
 
@@ -57,7 +61,7 @@ func (s *serviceProvider) ValidationStorage() storages.ValidationStorage {
 	if s.validationStorage == nil {
 		storage, err := houseStorageInstance.NewRepository(s.Config())
 		if err != nil {
-			log.Fatalf("could not init storage: %s", err.Error())
+			log.Fatalf("could not init house storage: %s", err.Error())
 		}
 		s.houseStorage = storage
 		s.validationStorage = storage
@@ -79,9 +83,27 @@ func (s *serviceProvider) ValidationService() service.ValidationService {
 	return s.validationService
 }
 
+func (s *serviceProvider) UserStorage() storages.UserStorage {
+	if s.userStorage == nil {
+		storage, err := userStorageInstance.NewRepository(s.Config())
+		if err != nil {
+			log.Fatalf("could not init user storage: %s", err.Error())
+		}
+		s.userStorage = storage
+	}
+	return s.userStorage
+}
+
+func (s *serviceProvider) UserService() service.AuthentificationService {
+	if s.userService == nil {
+		s.userService = userService.NewService(s.UserStorage(), s.Config())
+	}
+	return s.userService
+}
+
 func (s *serviceProvider) Router() *router.Router {
 	if s.router == nil {
-		s.router = router.NewRouter(logrus.New(), s.Config(), s.HouseService(), s.ValidationService(), nil) // nil
+		s.router = router.NewRouter(logrus.New(), s.Config(), s.HouseService(), s.ValidationService(), s.UserService()) // nil
 	}
 	return s.router
 }

@@ -1,4 +1,4 @@
-package house
+package auth
 
 import (
 	"avito-test/internal/config"
@@ -9,8 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var _ def.HouseStorage = (*repository)(nil)
-var _ def.ValidationStorage = (*repository)(nil)
+var _ def.UserStorage = (*repository)(nil)
 
 type repository struct {
 	db *sql.DB
@@ -19,12 +18,12 @@ type repository struct {
 func NewRepository(cfg *config.Config) (*repository, error) {
 	DSN := fmt.Sprintf(
 		"dbname=%s user=%s password=%s host=%s port=%s sslmode=%s",
-		cfg.HouseDB.DB,
-		cfg.HouseDB.User,
-		cfg.HouseDB.Password,
-		cfg.HouseDB.Host,
-		cfg.HouseDB.Port,
-		cfg.HouseDB.Sslmode,
+		cfg.UserDB.DB,
+		cfg.UserDB.User,
+		cfg.UserDB.Password,
+		cfg.UserDB.Host,
+		cfg.UserDB.Port,
+		cfg.UserDB.Sslmode,
 	)
 	db, _ := sql.Open("postgres", DSN)
 	if err := db.Ping(); err != nil {
@@ -33,4 +32,14 @@ func NewRepository(cfg *config.Config) (*repository, error) {
 	return &repository{
 		db: db,
 	}, nil
+}
+
+// GetUser implements storage.UserStorage.
+func (r *repository) GetUser() {
+	panic("unimplemented")
+}
+
+// RegisterUser implements storage.UserStorage.
+func (r *repository) RegisterUser() {
+	panic("unimplemented")
 }

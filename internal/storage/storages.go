@@ -14,3 +14,8 @@ type ValidationStorage interface {
 	HouseExists(uint64) (bool, error)
 	FlatExists(uint64) (bool, error)
 }
+
+type UserStorage interface {
+	GetUser() 
+	RegisterUser()
+}

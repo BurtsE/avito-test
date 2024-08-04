@@ -7,7 +7,7 @@ type ServerError struct {
 }
 
 func (e ServerError) Error() string {
-	return fmt.Sprintf("database error: %v", e.err)
+	return fmt.Sprintf("server error: %v", e.err)
 }
 
 type AuthError struct {
