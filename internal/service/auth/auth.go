@@ -14,6 +14,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO change private key
+
 var _ def.AuthentificationService = (*service)(nil)
 
 type service struct {

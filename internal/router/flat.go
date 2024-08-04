@@ -55,7 +55,7 @@ func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-
+	
 	flat, err := f.r.houseService.UpdateFlatStatus(status)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
