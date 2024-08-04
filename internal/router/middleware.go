@@ -50,6 +50,7 @@ func (r *Router) ModeratorAccess(handler fasthttp.RequestHandler) fasthttp.Reque
 			unAuthorized(apiCtx)
 			return
 		}
+		apiCtx.SetUserValue("role", role)
 		handler(apiCtx)
 	}
 }

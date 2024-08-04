@@ -7,6 +7,8 @@ var (
 
 type EnumRole interface{ isEnumRole() }
 
+type Role struct{}
+
 type user struct{ EnumRole }
 type moderator struct{ EnumRole }
 

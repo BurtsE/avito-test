@@ -1,6 +1,7 @@
 package router
 
 import (
+	"avito-test/internal/models"
 	serviceErrors "avito-test/internal/service_errors"
 	"context"
 	"errors"
@@ -19,8 +20,8 @@ func registerFlatApi(r *Router) {
 }
 
 func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
+	serviceCtx := context.WithValue(context.Background(), models.Role{}, apiCtx.Value("role"))
 	data := apiCtx.Request.Body()
-	serviceCtx := context.Background()
 	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
@@ -45,8 +46,8 @@ func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
 }
 
 func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
+	serviceCtx := context.WithValue(context.Background(), models.Role{}, apiCtx.Value("role"))
 	data := apiCtx.Request.Body()
-	serviceCtx := context.Background()
 	status, err := f.r.validationService.ValidateFlatStatusData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
