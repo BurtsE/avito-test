@@ -1,26 +1,29 @@
 package service
 
-import "avito-test/internal/models"
+import (
+	"avito-test/internal/models"
+	"context"
+)
 
 type HouseService interface {
-	CreateHouse(models.HouseBuilder) (*models.House, error)
-	HouseDesc(uint64) (*models.House, error)
+	CreateHouse(context.Context, models.HouseBuilder) (*models.House, error)
+	HouseDesc(context.Context, uint64) (*models.House, error)
 
-	CreateFlat(models.FlatBuilder) (*models.Flat, error)
-	UpdateFlatStatus(models.FlatStatus) (*models.Flat, error)
+	CreateFlat(context.Context, models.FlatBuilder) (*models.Flat, error)
+	UpdateFlatStatus(context.Context, models.FlatStatus) (*models.Flat, error)
 
-	HouseFlats(uint64) ([]*models.Flat, error)
+	HouseFlats(context.Context, uint64) ([]*models.Flat, error)
 }
 type ValidationService interface {
-	ValidateFlatBuilderData([]byte) (models.FlatBuilder, error)
-	ValidateFlatStatusData([]byte) (models.FlatStatus, error)
-	ValidateHouseData([]byte) (models.HouseBuilder, error)
-	ValidateHouse(uint64) error
-	ValidateFlat(uint64) error
-	ValidateDummyUserData([]byte) (models.EnumRole, error)
+	ValidateFlatBuilderData(context.Context, []byte) (models.FlatBuilder, error)
+	ValidateFlatStatusData(context.Context, []byte) (models.FlatStatus, error)
+	ValidateHouseData(context.Context, []byte) (models.HouseBuilder, error)
+	ValidateHouse(context.Context, uint64) error
+	ValidateFlat(context.Context, uint64) error
+	ValidateDummyUserData(context.Context, []byte) (models.EnumRole, error)
 }
 
 type AuthentificationService interface {
-	DummyAuthorize(models.EnumRole) (string, error)
-	CheckAuthorization([]byte) (models.EnumRole, error)
+	DummyAuthorize(context.Context, models.EnumRole) (string, error)
+	CheckAuthorization(context.Context, []byte) (models.EnumRole, error)
 }

@@ -3,6 +3,7 @@ package router
 import (
 	"avito-test/internal/models"
 	serviceErrors "avito-test/internal/service_errors"
+	"context"
 	"errors"
 
 	"github.com/valyala/fasthttp"
@@ -11,7 +12,7 @@ import (
 func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		token := ctx.Request.Header.Peek("Authorization")
-		role, err := r.authService.CheckAuthorization(token)
+		role, err := r.authService.CheckAuthorization(context.Background(), token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
 			internalServerErrorResponce(ctx)
@@ -31,23 +32,24 @@ func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHan
 }
 
 func (r *Router) ModeratorAccess(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
-		token := ctx.Request.Header.Peek("Authorization")
-		role, err := r.authService.CheckAuthorization(token)
+	return func(apiCtx *fasthttp.RequestCtx) {
+		token := apiCtx.Request.Header.Peek("Authorization")
+		serviceCtx := context.Background()
+		role, err := r.authService.CheckAuthorization(serviceCtx, token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
-			internalServerErrorResponce(ctx)
+			internalServerErrorResponce(apiCtx)
 			return
 		}
 		if errors.As(err, &serviceErrors.AuthError{}) {
 			r.logger.Println(err)
-			unAuthorized(ctx)
+			unAuthorized(apiCtx)
 			return
 		}
 		if role != models.ModeratorRole {
-			unAuthorized(ctx)
+			unAuthorized(apiCtx)
 			return
 		}
-		handler(ctx)
+		handler(apiCtx)
 	}
 }

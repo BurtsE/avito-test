@@ -2,6 +2,7 @@ package router
 
 import (
 	serviceErrors "avito-test/internal/service_errors"
+	"context"
 	"errors"
 
 	"github.com/valyala/fasthttp"
@@ -17,51 +18,53 @@ func registerFlatApi(r *Router) {
 	r.router.POST("/flat/update", r.ModeratorAccess(flatImpl.changeModerationType))
 }
 
-func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
-	data := ctx.Request.Body()
-	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(data)
+func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
+	data := apiCtx.Request.Body()
+	serviceCtx := context.Background()
+	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
-		invalidDataResponce(ctx)
+		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	flat, err := f.r.houseService.CreateFlat(flatBuilder)
+	flat, err := f.r.houseService.CreateFlat(serviceCtx, flatBuilder)
 
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	f.r.sendResponce(ctx, flat)
+	f.r.sendResponce(apiCtx, flat)
 }
 
-func (f *flatImpl) changeModerationType(ctx *fasthttp.RequestCtx) {
-	data := ctx.Request.Body()
-	status, err := f.r.validationService.ValidateFlatStatusData(data)
+func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
+	data := apiCtx.Request.Body()
+	serviceCtx := context.Background()
+	status, err := f.r.validationService.ValidateFlatStatusData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
-		invalidDataResponce(ctx)
+		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
-		return
-	}
-	
-	flat, err := f.r.houseService.UpdateFlatStatus(status)
-	if errors.As(err, &serviceErrors.ServerError{}) {
-		f.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	f.r.sendResponce(ctx, flat)
+	flat, err := f.r.houseService.UpdateFlatStatus(serviceCtx, status)
+	if errors.As(err, &serviceErrors.ServerError{}) {
+		f.r.logger.Println(err)
+		internalServerErrorResponce(apiCtx)
+		return
+	}
+
+	f.r.sendResponce(apiCtx, flat)
 }

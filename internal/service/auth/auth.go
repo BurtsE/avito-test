@@ -6,6 +6,7 @@ import (
 	def "avito-test/internal/service"
 	serviceErrors "avito-test/internal/service_errors"
 	"avito-test/internal/storage"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -32,7 +33,7 @@ func NewService(userStorage storage.UserStorage, cfg *config.Config) *service {
 	}
 }
 
-func (s *service) DummyAuthorize(role models.EnumRole) (string, error) {
+func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (string, error) {
 	var (
 		roleStr string
 		claims  jwt.MapClaims
@@ -59,7 +60,7 @@ func (s *service) DummyAuthorize(role models.EnumRole) (string, error) {
 	return fmt.Sprintf(`{"token":"%s"}`, tokenString), nil
 }
 
-func (s *service) CheckAuthorization(data []byte) (models.EnumRole, error) {
+func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.EnumRole, error) {
 	token, err := jwt.Parse(string(data), func(t *jwt.Token) (interface{}, error) {
 		return s.jwtSecretKey, nil
 	})

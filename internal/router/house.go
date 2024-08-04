@@ -2,6 +2,7 @@ package router
 
 import (
 	serviceErrors "avito-test/internal/service_errors"
+	"context"
 	"errors"
 	"strconv"
 
@@ -19,60 +20,55 @@ func registerHouseApi(r *Router) {
 	r.router.POST("/house/{id}/subscribe", r.UserAccess(houseImpl.subscribe))
 }
 
-func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
-	data := ctx.Request.Body()
-	builder, err := h.r.validationService.ValidateHouseData(data)
+func (h *houseImpl) createHouse(apiCtx *fasthttp.RequestCtx) {
+	data := apiCtx.Request.Body()
+	serviceCtx := context.Background()
+	builder, err := h.r.validationService.ValidateHouseData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		h.r.logger.Println(err)
-		invalidDataResponce(ctx)
+		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	house, err := h.r.houseService.CreateHouse(builder)
+	house, err := h.r.houseService.CreateHouse(serviceCtx, builder)
 
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	h.r.sendResponce(ctx, house)
+	h.r.sendResponce(apiCtx, house)
 }
-func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
-	idStr := ctx.UserValue("id").(string)
+func (h *houseImpl) getHouseData(apiCtx *fasthttp.RequestCtx) {
+	idStr := apiCtx.UserValue("id").(string)
 	uuid, _ := strconv.ParseUint(idStr, 10, 64)
-
-	err := h.r.validationService.ValidateHouse(uuid)
+	serviceCtx := context.Background()
+	err := h.r.validationService.ValidateHouse(serviceCtx, uuid)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		h.r.logger.Println(err)
-		invalidDataResponce(ctx)
+		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
-
-	// house, err := h.r.houseService.HouseDesc(uuid)
-	// if errors.As(err, &serviceErrors.ServerError{}) {
-	// 	h.r.logger.Println(err)
-	// 	internalServerErrorResponce(ctx)
-	// 	return
-	// }
-	flats, err := h.r.houseService.HouseFlats(uuid)
+	
+	flats, err := h.r.houseService.HouseFlats(context.Background(), uuid)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	h.r.sendResponce(ctx, flats)
+	h.r.sendResponce(apiCtx, flats)
 
 }
 func (h *houseImpl) subscribe(ctx *fasthttp.RequestCtx) {

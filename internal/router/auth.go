@@ -2,6 +2,7 @@ package router
 
 import (
 	serviceErrors "avito-test/internal/service_errors"
+	"context"
 	"errors"
 
 	"github.com/valyala/fasthttp"
@@ -19,28 +20,29 @@ func registerAuthApi(r *Router) {
 
 }
 
-func (a *authImpl) dummyLogin(ctx *fasthttp.RequestCtx) {
-	data := ctx.QueryArgs().Peek("role")
-	role, err := a.r.validationService.ValidateDummyUserData(data)
+func (a *authImpl) dummyLogin(apiCtx *fasthttp.RequestCtx) {
+	data := apiCtx.QueryArgs().Peek("role")
+	serviceCtx := context.Background()
+	role, err := a.r.validationService.ValidateDummyUserData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		a.r.logger.Println(err)
-		invalidDataResponce(ctx)
+		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		a.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
 
-	responce, err := a.r.authService.DummyAuthorize(role)
+	responce, err := a.r.authService.DummyAuthorize(serviceCtx, role)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		a.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
+		internalServerErrorResponce(apiCtx)
 		return
 	}
-	
-	a.r.sendResponce(ctx, responce)
+
+	a.r.sendResponce(apiCtx, responce)
 }
 
 func (a *authImpl) login(ctx *fasthttp.RequestCtx) {
