@@ -39,12 +39,7 @@ func (a *authImpl) dummyLogin(ctx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(ctx)
 		return
 	}
-	// TODO delete
-	if errors.As(err, &serviceErrors.AuthError{}) {
-		a.r.logger.Println(err)
-		internalServerErrorResponce(ctx)
-		return
-	}
+	
 	a.r.sendResponce(ctx, responce)
 }
 

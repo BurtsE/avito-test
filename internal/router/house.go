@@ -14,9 +14,9 @@ type houseImpl struct {
 
 func registerHouseApi(r *Router) {
 	houseImpl := houseImpl{r}
-	r.router.POST("/house/create", houseImpl.createHouse)
-	r.router.GET("/house/{id:[0-9]*}", houseImpl.getHouseData)
-	r.router.POST("/house/{id}/subscribe", houseImpl.subscribe)
+	r.router.POST("/house/create", r.ModeratorAccess(houseImpl.createHouse))
+	r.router.GET("/house/{id:[0-9]*}", r.UserAccess(houseImpl.getHouseData))
+	r.router.POST("/house/{id}/subscribe", r.UserAccess(houseImpl.subscribe))
 }
 
 func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
@@ -50,7 +50,6 @@ func (h *houseImpl) createHouse(ctx *fasthttp.RequestCtx) {
 	h.r.sendResponce(ctx, house)
 }
 func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
-
 	idStr := ctx.UserValue("id").(string)
 	uuid, _ := strconv.ParseUint(idStr, 10, 64)
 

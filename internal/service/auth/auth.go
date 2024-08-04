@@ -65,16 +65,15 @@ func (s *service) CheckAuthorization(data []byte) (models.EnumRole, error) {
 		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
 	}
 	val, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+	if !ok || !token.Valid {
+		return nil, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
 	}
-
 	switch val["role"] {
 	case "user":
 		return models.UserRole, nil
 	case "moderator":
 		return models.ModeratorRole, nil
 	default:
-		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+		return nil, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
 	}
 }

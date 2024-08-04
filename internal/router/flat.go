@@ -13,8 +13,8 @@ type flatImpl struct {
 
 func registerFlatApi(r *Router) {
 	flatImpl := flatImpl{r}
-	r.router.POST("/flat/create", flatImpl.createFlat)
-	r.router.POST("/flat/update", flatImpl.changeModerationType)
+	r.router.POST("/flat/create", r.UserAccess(flatImpl.createFlat))
+	r.router.POST("/flat/update", r.ModeratorAccess(flatImpl.changeModerationType))
 }
 
 func (f *flatImpl) createFlat(ctx *fasthttp.RequestCtx) {
