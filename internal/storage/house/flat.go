@@ -57,11 +57,15 @@ func (r *repository) FlatsByHouseId(uuid uint64) ([]*models.Flat, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	var status string
 	flats := make([]*models.Flat, 0, 100)
 	for rows.Next() {
 		flat := models.Flat{}
-		err = rows.Scan(&flat.Id, &flat.Price, &flat.RoomNumber, &flat.Status)
+		err = rows.Scan(&flat.Id, &flat.Price, &flat.RoomNumber, &status)
+		if err != nil {
+			return nil, err
+		}
+		flat.Status, err = converter.ModerationValueFromString(status)
 		if err != nil {
 			return nil, err
 		}

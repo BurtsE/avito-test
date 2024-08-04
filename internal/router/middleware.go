@@ -10,24 +10,26 @@ import (
 )
 
 func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
-		token := ctx.Request.Header.Peek("Authorization")
-		role, err := r.authService.CheckAuthorization(context.Background(), token)
+	return func(apiCtx *fasthttp.RequestCtx) {
+		token := apiCtx.Request.Header.Peek("Authorization")
+		serviceCtx := context.Background()
+		role, err := r.authService.CheckAuthorization(serviceCtx, token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
-			internalServerErrorResponce(ctx)
+			internalServerErrorResponce(apiCtx)
 			return
 		}
 		if errors.As(err, &serviceErrors.AuthError{}) {
 			r.logger.Println(err)
-			unAuthorized(ctx)
+			unAuthorized(apiCtx)
 			return
 		}
 		if role != models.ModeratorRole && role != models.UserRole {
-			unAuthorized(ctx)
+			unAuthorized(apiCtx)
 			return
 		}
-		handler(ctx)
+		apiCtx.SetUserValue("role", role)
+		handler(apiCtx)
 	}
 }
 

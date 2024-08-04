@@ -29,5 +29,20 @@ func (s *service) HouseFlats(ctx context.Context, uuid uint64) ([]*models.Flat, 
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
+	role := ctx.Value(models.Role{})
+	if role == models.UserRole {
+		return s.filterFlats(flats), nil
+	}
 	return flats, nil
+}
+
+func (s *service) filterFlats(flats []*models.Flat) []*models.Flat {
+	filterdFlats := make([]*models.Flat, 0, 100)
+	for _, flat := range flats {
+		if flat.Status == models.OnModerate {
+			continue
+		}
+		filterdFlats = append(filterdFlats, flat)
+	}
+	return filterdFlats
 }
