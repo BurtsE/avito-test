@@ -59,14 +59,20 @@ func (h *houseImpl) getHouseData(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	house, err := h.r.houseService.GetHouseDesc(uuid)
+	// house, err := h.r.houseService.HouseDesc(uuid)
+	// if errors.As(err, &serviceErrors.ServerError{}) {
+	// 	h.r.logger.Println(err)
+	// 	internalServerErrorResponce(ctx)
+	// 	return
+	// }
+	flats, err := h.r.houseService.HouseFlats(uuid)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
 		internalServerErrorResponce(ctx)
 		return
 	}
 
-	h.r.sendResponce(ctx, house)
+	h.r.sendResponce(ctx, flats)
 
 }
 func (h *houseImpl) subscribe(ctx *fasthttp.RequestCtx) {

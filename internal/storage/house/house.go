@@ -21,7 +21,7 @@ func (r *repository) CreateHouse(builder models.HouseBuilder) (*models.House, er
 	return &house, nil
 }
 
-func (r *repository) GetHouseDesc(uuid uint64) (*models.House, error) {
+func (r *repository) HouseDesc(uuid uint64) (*models.House, error) {
 	query := `
 		SELECT adress, construction_date, developer, initialization_date, last_update_time
 		FROM houses

@@ -35,7 +35,7 @@ func NewRepository(cfg *config.Config) (*repository, error) {
 }
 
 // GetUser implements storage.UserStorage.
-func (r *repository) GetUser() {
+func (r *repository) User() {
 	panic("unimplemented")
 }
 

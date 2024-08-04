@@ -45,3 +45,27 @@ func (r *repository) UpdateFlatStatus(id uint64, status string) (*models.Flat, e
 	}
 	return flat, nil
 }
+
+func (r *repository) FlatsByHouseId(uuid uint64) ([]*models.Flat, error) {
+	query := `
+		SELECT id, price, room_number, moderation_status
+		FROM flats
+		WHERE true
+			AND house_id=$1
+	`
+	rows, err := r.db.Query(query, &uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	flats := make([]*models.Flat, 0, 100)
+	for rows.Next() {
+		flat := models.Flat{}
+		err = rows.Scan(&flat.Id, &flat.Price, &flat.RoomNumber, &flat.Status)
+		if err != nil {
+			return nil, err
+		}
+		flats = append(flats, &flat)
+	}
+	return flats, nil
+}

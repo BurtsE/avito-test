@@ -4,10 +4,12 @@ import "avito-test/internal/models"
 
 type HouseStorage interface {
 	CreateHouse(models.HouseBuilder) (*models.House, error)
-	GetHouseDesc(uint64) (*models.House, error)
+	HouseDesc(uint64) (*models.House, error)
 
 	CreateFlat(models.FlatBuilder, string) (*models.Flat, error)
 	UpdateFlatStatus(uint64, string) (*models.Flat, error)
+
+	FlatsByHouseId(uint64) ([]*models.Flat, error)
 }
 
 type ValidationStorage interface {
@@ -16,6 +18,6 @@ type ValidationStorage interface {
 }
 
 type UserStorage interface {
-	GetUser() 
+	User()
 	RegisterUser()
 }
