@@ -1,6 +1,8 @@
 package house
 
-import "context"
+import (
+	"context"
+)
 
 func (r *repository) HouseExists(ctx context.Context, id uint64) (bool, error) {
 	query := `
@@ -21,9 +23,16 @@ func (r *repository) FlatExists(ctx context.Context, id uint64) (bool, error) {
 		FROM flats
 		WHERE id = $1
 	`
-	err := r.db.QueryRow(query, id).Scan(&id)
+	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
+		tx.Rollback()
 		return false, err
 	}
+	err = tx.QueryRow(query, id).Scan(&id)
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+
 	return true, nil
 }

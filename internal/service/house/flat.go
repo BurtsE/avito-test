@@ -22,8 +22,14 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 	if flat.Status == models.OnModerate {
 		return flat, nil
 	}
-
+	
 	flat, err = s.houseStorage.UpdateFlatStatus(ctx, *flatStatus.Id, *flatStatus.Value)
+	if err != nil {
+
+		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
+	}
+	
+	err = s.houseStorage.ChangeHouseUpdateTime(ctx, flat.HouseId)
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
