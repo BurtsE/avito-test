@@ -6,6 +6,7 @@ type HouseStorage interface {
 	CreateHouse(models.HouseBuilder) (*models.House, error)
 	HouseDesc(uint64) (*models.House, error)
 
+	Flat(uint64) (*models.Flat, error)
 	CreateFlat(models.FlatBuilder, string) (*models.Flat, error)
 	UpdateFlatStatus(uint64, string) (*models.Flat, error)
 

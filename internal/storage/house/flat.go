@@ -5,7 +5,27 @@ import (
 	"avito-test/internal/models"
 )
 
-// CreateFlat implements house.HouseStorage.
+func (r *repository) Flat(id uint64) (*models.Flat, error) {
+	query := `
+		SELECT price, room_number,house_id, moderation_status 
+		FROM flats
+		WHERE true
+			AND id=$1
+	`
+	flat := models.Flat{Id: id}
+	status := ""
+	row := r.db.QueryRow(query, id)
+	err := row.Scan(&flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
+	if err != nil {
+		return nil, err
+	}
+	flat.Status, err = converter.ModerationValueFromString(status)
+	if err != nil {
+		return nil, err
+	}
+	return &flat, nil
+}
+
 func (r *repository) CreateFlat(builder models.FlatBuilder, status string) (*models.Flat, error) {
 	flat := converter.FlatFromFlatBuilder(builder)
 
@@ -14,7 +34,7 @@ func (r *repository) CreateFlat(builder models.FlatBuilder, status string) (*mod
 		VALUES ($1, $2, $3, $4)
 		RETURNING id
 	`
-	row := r.db.QueryRow(query, &flat.Price, &flat.RoomNumber, &flat.HouseId, status)
+	row := r.db.QueryRow(query, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
 	err := row.Scan(&flat.Id)
 	if err != nil {
 		return nil, err
@@ -24,22 +44,12 @@ func (r *repository) CreateFlat(builder models.FlatBuilder, status string) (*mod
 
 func (r *repository) UpdateFlatStatus(id uint64, status string) (*models.Flat, error) {
 	query := `
-		SELECT price, room_number, house_id
-		FROM flats
-		WHERE id = $1
-	`
-	flat := &models.Flat{Id: id}
-	err := r.db.QueryRow(query, id).Scan(&flat.Price, &flat.RoomNumber, &flat.HouseId)
-	if err != nil {
-		return nil, err
-	}
-
-	query = `
 		UPDATE flats
 		SET moderation_status = $2
 		WHERE id = $1
 	`
-	_, err = r.db.Exec(query, id, status)
+	flat := &models.Flat{Id: id}
+	_, err := r.db.Exec(query, id, status)
 	if err != nil {
 		return nil, err
 	}
