@@ -1,24 +1,28 @@
 package storage
 
-import "avito-test/internal/models"
+import (
+	"avito-test/internal/models"
+	"context"
+)
 
 type HouseStorage interface {
-	CreateHouse(models.HouseBuilder) (*models.House, error)
-	HouseDesc(uint64) (*models.House, error)
+	CreateHouse(context.Context, models.HouseBuilder) (*models.House, error)
+	HouseDesc(context.Context, uint64) (*models.House, error)
+	ChangeHouseUpdateTime(context.Context, uint64) error
 
-	Flat(uint64) (*models.Flat, error)
-	CreateFlat(models.FlatBuilder, string) (*models.Flat, error)
-	UpdateFlatStatus(uint64, string) (*models.Flat, error)
+	Flat(context.Context, uint64) (*models.Flat, error)
+	CreateFlat(context.Context, models.FlatBuilder, string) (*models.Flat, error)
+	UpdateFlatStatus(context.Context, uint64, string) (*models.Flat, error)
 
-	FlatsByHouseId(uint64) ([]*models.Flat, error)
+	FlatsByHouseId(context.Context, uint64) ([]*models.Flat, error)
 }
 
 type ValidationStorage interface {
-	HouseExists(uint64) (bool, error)
-	FlatExists(uint64) (bool, error)
+	HouseExists(context.Context, uint64) (bool, error)
+	FlatExists(context.Context, uint64) (bool, error)
 }
 
 type UserStorage interface {
-	User()
-	RegisterUser()
+	User(context.Context)
+	RegisterUser(context.Context)
 }

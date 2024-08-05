@@ -3,9 +3,11 @@ package house
 import (
 	"avito-test/internal/converter"
 	"avito-test/internal/models"
+	"context"
+	"time"
 )
 
-func (r *repository) CreateHouse(builder models.HouseBuilder) (*models.House, error) {
+func (r *repository) CreateHouse(ctx context.Context, builder models.HouseBuilder) (*models.House, error) {
 	house := converter.HouseFromHouseBuilder(builder)
 	query := `
 		INSERT INTO houses (adress, construction_date, developer, initialization_date, last_update_time)
@@ -21,7 +23,7 @@ func (r *repository) CreateHouse(builder models.HouseBuilder) (*models.House, er
 	return &house, nil
 }
 
-func (r *repository) HouseDesc(uuid uint64) (*models.House, error) {
+func (r *repository) HouseDesc(ctx context.Context, uuid uint64) (*models.House, error) {
 	query := `
 		SELECT adress, construction_date, developer, initialization_date, last_update_time
 		FROM houses
@@ -35,4 +37,17 @@ func (r *repository) HouseDesc(uuid uint64) (*models.House, error) {
 		return nil, err
 	}
 	return house, nil
+}
+
+func (r *repository) ChangeHouseUpdateTime(ctx context.Context, uuid uint64) error {
+	query := `
+		UPDATE houses
+		SET last_update_time = $2
+		WHERE uuid = $1
+	`
+	_, err := r.db.Exec(query, uuid, time.Now())
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -1,6 +1,8 @@
 package house
 
-func (r *repository) HouseExists(id uint64) (bool, error) {
+import "context"
+
+func (r *repository) HouseExists(ctx context.Context, id uint64) (bool, error) {
 	query := `
 		SELECT uuid
 		FROM houses
@@ -13,7 +15,7 @@ func (r *repository) HouseExists(id uint64) (bool, error) {
 	return true, nil
 }
 
-func (r *repository) FlatExists(id uint64) (bool, error) {
+func (r *repository) FlatExists(ctx context.Context, id uint64) (bool, error) {
 	query := `
 		SELECT id
 		FROM flats

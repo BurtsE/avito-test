@@ -58,7 +58,7 @@ func (s *service) ValidateFlatBuilderData(ctx context.Context, data []byte) (mod
 }
 
 func (s *service) ValidateHouse(ctx context.Context, uuid uint64) error {
-	exists, err := s.validationStorage.HouseExists(uuid)
+	exists, err := s.validationStorage.HouseExists(ctx, uuid)
 	if err != nil {
 		return errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
@@ -69,7 +69,7 @@ func (s *service) ValidateHouse(ctx context.Context, uuid uint64) error {
 }
 
 func (s *service) ValidateFlat(ctx context.Context, uuid uint64) error {
-	exists, err := s.validationStorage.FlatExists(uuid)
+	exists, err := s.validationStorage.FlatExists(ctx, uuid)
 	if err != nil {
 		return errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}

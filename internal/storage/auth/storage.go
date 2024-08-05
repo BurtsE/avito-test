@@ -3,6 +3,7 @@ package auth
 import (
 	"avito-test/internal/config"
 	def "avito-test/internal/storage"
+	"context"
 	"database/sql"
 	"fmt"
 
@@ -35,11 +36,11 @@ func NewRepository(cfg *config.Config) (*repository, error) {
 }
 
 // GetUser implements storage.UserStorage.
-func (r *repository) User() {
+func (r *repository) User(ctx context.Context) {
 	panic("unimplemented")
 }
 
 // RegisterUser implements storage.UserStorage.
-func (r *repository) RegisterUser() {
+func (r *repository) RegisterUser(ctx context.Context) {
 	panic("unimplemented")
 }

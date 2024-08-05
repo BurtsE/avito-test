@@ -14,8 +14,8 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-	
-	flat, err := s.houseStorage.Flat(*flatStatus.Id)
+
+	flat, err := s.houseStorage.Flat(ctx, *flatStatus.Id)
 	if err != nil {
 		return flat, err
 	}
@@ -23,7 +23,7 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 		return flat, nil
 	}
 
-	flat, err = s.houseStorage.UpdateFlatStatus(*flatStatus.Id, *flatStatus.Value)
+	flat, err = s.houseStorage.UpdateFlatStatus(ctx, *flatStatus.Id, *flatStatus.Value)
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
@@ -36,7 +36,7 @@ func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder
 	// if err != nil {
 	// 	return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	// }
-	flat, err := s.houseStorage.CreateFlat(flatBuilder, models.Created.String())
+	flat, err := s.houseStorage.CreateFlat(ctx, flatBuilder, models.Created.String())
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}

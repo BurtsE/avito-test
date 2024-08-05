@@ -3,9 +3,10 @@ package house
 import (
 	"avito-test/internal/converter"
 	"avito-test/internal/models"
+	"context"
 )
 
-func (r *repository) Flat(id uint64) (*models.Flat, error) {
+func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) {
 	query := `
 		SELECT price, room_number,house_id, moderation_status 
 		FROM flats
@@ -26,9 +27,8 @@ func (r *repository) Flat(id uint64) (*models.Flat, error) {
 	return &flat, nil
 }
 
-func (r *repository) CreateFlat(builder models.FlatBuilder, status string) (*models.Flat, error) {
+func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder, status string) (*models.Flat, error) {
 	flat := converter.FlatFromFlatBuilder(builder)
-
 	query := `
 		INSERT INTO flats(price, room_number, house_id, moderation_status)
 		VALUES ($1, $2, $3, $4)
@@ -42,7 +42,7 @@ func (r *repository) CreateFlat(builder models.FlatBuilder, status string) (*mod
 	return &flat, nil
 }
 
-func (r *repository) UpdateFlatStatus(id uint64, status string) (*models.Flat, error) {
+func (r *repository) UpdateFlatStatus(ctx context.Context, id uint64, status string) (*models.Flat, error) {
 	query := `
 		UPDATE flats
 		SET moderation_status = $2
@@ -56,7 +56,7 @@ func (r *repository) UpdateFlatStatus(id uint64, status string) (*models.Flat, e
 	return flat, nil
 }
 
-func (r *repository) FlatsByHouseId(uuid uint64) ([]*models.Flat, error) {
+func (r *repository) FlatsByHouseId(ctx context.Context, uuid uint64) ([]*models.Flat, error) {
 	query := `
 		SELECT id, price, room_number, moderation_status
 		FROM flats
