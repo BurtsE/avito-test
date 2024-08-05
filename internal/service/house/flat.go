@@ -14,6 +14,7 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
+
 	flat, err := s.houseStorage.UpdateFlatStatus(*flatStatus.Id, *flatStatus.Value)
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
@@ -23,7 +24,7 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 }
 
 func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder) (*models.Flat, error) {
-	status, err := converter.StringFromModerationValue(models.OnModerate)
+	status, err := converter.StringFromModerationValue(models.Created)
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
