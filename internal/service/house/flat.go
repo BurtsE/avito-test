@@ -9,31 +9,27 @@ import (
 	"github.com/pkg/errors"
 )
 
+var initialStatus = models.Created
+
 func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatStatus) (*models.Flat, error) {
-	status, err := converter.ModerationValueFromString(*flatStatus.Value)
-	if err != nil {
-		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
-	}
 
 	flat, err := s.houseStorage.Flat(ctx, *flatStatus.Id)
 	if err != nil {
-		return flat, err
+		return flat, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
 	if flat.Status == models.OnModerate {
 		return flat, nil
 	}
-	
-	flat, err = s.houseStorage.UpdateFlatStatus(ctx, *flatStatus.Id, *flatStatus.Value)
-	if err != nil {
 
-		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
-	}
-	
-	err = s.houseStorage.ChangeHouseUpdateTime(ctx, flat.HouseId)
+	err = s.houseStorage.UpdateFlatStatus(ctx, *flatStatus.Id, *flatStatus.Value)
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-	flat.Status = status
+
+	flat.Status, err = converter.ModerationValueFromString(*flatStatus.Value)
+	if err != nil {
+		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
+	}
 	return flat, nil
 }
 
@@ -42,10 +38,15 @@ func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder
 	// if err != nil {
 	// 	return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	// }
-	flat, err := s.houseStorage.CreateFlat(ctx, flatBuilder, models.Created.String())
+	flat, err := s.houseStorage.CreateFlat(ctx, flatBuilder, initialStatus.String())
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-	flat.Status = models.OnModerate
+	flat.Status = initialStatus
+
+	err = s.houseStorage.AddFlatToHouse(ctx, flat.HouseId)
+	if err != nil {
+		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
+	}
 	return flat, nil
 }

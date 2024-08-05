@@ -41,7 +41,6 @@ func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(apiCtx)
 		return
 	}
-
 	f.r.sendResponce(apiCtx, flat)
 }
 

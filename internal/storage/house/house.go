@@ -39,10 +39,10 @@ func (r *repository) HouseDesc(ctx context.Context, uuid uint64) (*models.House,
 	return house, nil
 }
 
-func (r *repository) ChangeHouseUpdateTime(ctx context.Context, uuid uint64) error {
+func (r *repository) AddFlatToHouse(ctx context.Context, uuid uint64) error {
 	query := `
 		UPDATE houses
-		SET last_update_time = $2
+		SET last_update_time = $2, flats_number = flats_number + 1
 		WHERE uuid = $1
 	`
 	_, err := r.db.Exec(query, uuid, time.Now())

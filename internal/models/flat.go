@@ -13,6 +13,7 @@ var (
 
 type Flat struct {
 	Id         uint64           `json:"id"`
+	UnitNumber uint64           `json:"unit_number"`
 	HouseId    uint64           `json:"house_id"`
 	Price      uint64           `json:"price"`
 	RoomNumber byte             `json:"rooms"`
@@ -21,13 +22,13 @@ type Flat struct {
 
 func (m *Flat) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Id         uint64 `json:"id"`
+		UnitNumber uint64 `json:"id"`
 		HouseId    uint64 `json:"house_id"`
 		Price      uint64 `json:"price"`
 		RoomNumber byte   `json:"rooms"`
 		Status     string `json:"status"`
 	}{
-		Id:         m.Id,
+		UnitNumber: m.UnitNumber,
 		HouseId:    m.HouseId,
 		Price:      m.Price,
 		RoomNumber: m.RoomNumber,

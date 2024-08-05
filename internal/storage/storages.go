@@ -8,11 +8,11 @@ import (
 type HouseStorage interface {
 	CreateHouse(context.Context, models.HouseBuilder) (*models.House, error)
 	HouseDesc(context.Context, uint64) (*models.House, error)
-	ChangeHouseUpdateTime(context.Context, uint64) error
+	AddFlatToHouse(context.Context, uint64) error
 
 	Flat(context.Context, uint64) (*models.Flat, error)
 	CreateFlat(context.Context, models.FlatBuilder, string) (*models.Flat, error)
-	UpdateFlatStatus(context.Context, uint64, string) (*models.Flat, error)
+	UpdateFlatStatus(context.Context, uint64, string) (error)
 
 	FlatsByHouseId(context.Context, uint64) ([]*models.Flat, error)
 }
