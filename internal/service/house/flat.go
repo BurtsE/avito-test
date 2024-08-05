@@ -34,19 +34,10 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 }
 
 func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder) (*models.Flat, error) {
-	// status, err := converter.StringFromModerationValue(models.Created)
-	// if err != nil {
-	// 	return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
-	// }
 	flat, err := s.houseStorage.CreateFlat(ctx, flatBuilder, initialStatus.String())
 	if err != nil {
 		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
 	flat.Status = initialStatus
-
-	err = s.houseStorage.AddFlatToHouse(ctx, flat.HouseId)
-	if err != nil {
-		return nil, errors.Wrap(serviceErrors.ServerError{}, err.Error())
-	}
 	return flat, nil
 }

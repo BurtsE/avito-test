@@ -4,6 +4,7 @@ import (
 	"avito-test/internal/converter"
 	"avito-test/internal/models"
 	"context"
+	"time"
 )
 
 func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) {
@@ -38,9 +39,26 @@ func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder,
 			), $1, $2, $3, $4)
 		RETURNING id, unit_number
 	`
-	row := r.db.QueryRow(query, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
-	err := row.Scan(&flat.Id, &flat.UnitNumber)
+	tx, err := r.db.Begin()
 	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+	row := tx.QueryRow(query, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
+	err = row.Scan(&flat.Id, &flat.UnitNumber)
+	if err != nil {
+		return nil, err
+	}
+	query = `
+		UPDATE houses
+		SET last_update_time = $2, flats_number = flats_number + 1
+		WHERE uuid = $1
+	`
+	_, err = tx.Exec(query, builder.HouseId, time.Now())
+	if err != nil {
+		return nil, err
+	}
+	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
 	return &flat, nil

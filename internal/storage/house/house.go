@@ -4,7 +4,6 @@ import (
 	"avito-test/internal/converter"
 	"avito-test/internal/models"
 	"context"
-	"time"
 )
 
 func (r *repository) CreateHouse(ctx context.Context, builder models.HouseBuilder) (*models.House, error) {
@@ -37,17 +36,4 @@ func (r *repository) HouseDesc(ctx context.Context, uuid uint64) (*models.House,
 		return nil, err
 	}
 	return house, nil
-}
-
-func (r *repository) AddFlatToHouse(ctx context.Context, uuid uint64) error {
-	query := `
-		UPDATE houses
-		SET last_update_time = $2, flats_number = flats_number + 1
-		WHERE uuid = $1
-	`
-	_, err := r.db.Exec(query, uuid, time.Now())
-	if err != nil {
-		return err
-	}
-	return nil
 }

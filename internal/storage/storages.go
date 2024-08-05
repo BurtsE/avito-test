@@ -8,7 +8,6 @@ import (
 type HouseStorage interface {
 	CreateHouse(context.Context, models.HouseBuilder) (*models.House, error)
 	HouseDesc(context.Context, uint64) (*models.House, error)
-	AddFlatToHouse(context.Context, uint64) error
 
 	Flat(context.Context, uint64) (*models.Flat, error)
 	CreateFlat(context.Context, models.FlatBuilder, string) (*models.Flat, error)
