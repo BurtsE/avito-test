@@ -94,7 +94,7 @@ func (r *repository) FlatsByHouseId(ctx context.Context, uuid uint64) ([]*models
 	var status string
 	flats := make([]*models.Flat, 0, 100)
 	for rows.Next() {
-		flat := models.Flat{}
+		flat := models.Flat{HouseId: uuid}
 		err = rows.Scan(&flat.Id, &flat.UnitNumber, &flat.Price, &flat.RoomNumber, &status)
 		if err != nil {
 			return nil, err
