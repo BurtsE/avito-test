@@ -21,5 +21,6 @@ type DummyUser struct {
 
 type User struct {
 	Id       *string `json:"id"`
+	Role     EnumRole
 	Password *string `json:"password"`
 }

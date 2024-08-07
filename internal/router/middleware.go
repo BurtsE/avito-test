@@ -13,7 +13,7 @@ func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHan
 	return func(apiCtx *fasthttp.RequestCtx) {
 		token := apiCtx.Request.Header.Peek("Authorization")
 		serviceCtx := context.Background()
-		role, err := r.authService.CheckAuthorization(serviceCtx, token)
+		user, err := r.authService.CheckAuthorization(serviceCtx, token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
 			internalServerErrorResponce(apiCtx)
@@ -24,11 +24,11 @@ func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHan
 			unAuthorized(apiCtx)
 			return
 		}
-		if role != models.ModeratorRole && role != models.UserRole {
+		if user.Role != models.ModeratorRole && user.Role != models.UserRole {
 			unAuthorized(apiCtx)
 			return
 		}
-		apiCtx.SetUserValue("role", role)
+		apiCtx.SetUserValue("user", user)
 		handler(apiCtx)
 	}
 }
@@ -37,7 +37,7 @@ func (r *Router) ModeratorAccess(handler fasthttp.RequestHandler) fasthttp.Reque
 	return func(apiCtx *fasthttp.RequestCtx) {
 		token := apiCtx.Request.Header.Peek("Authorization")
 		serviceCtx := context.Background()
-		role, err := r.authService.CheckAuthorization(serviceCtx, token)
+		user, err := r.authService.CheckAuthorization(serviceCtx, token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
 			internalServerErrorResponce(apiCtx)
@@ -48,11 +48,11 @@ func (r *Router) ModeratorAccess(handler fasthttp.RequestHandler) fasthttp.Reque
 			unAuthorized(apiCtx)
 			return
 		}
-		if role != models.ModeratorRole {
+		if user.Role != models.ModeratorRole {
 			unAuthorized(apiCtx)
 			return
 		}
-		apiCtx.SetUserValue("role", role)
+		apiCtx.SetUserValue("user", user)
 		handler(apiCtx)
 	}
 }

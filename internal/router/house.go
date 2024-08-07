@@ -22,7 +22,7 @@ func registerHouseApi(r *Router) {
 }
 
 func (h *houseImpl) createHouse(apiCtx *fasthttp.RequestCtx) {
-	serviceCtx := context.WithValue(context.Background(), models.Role{}, apiCtx.UserValue("role"))
+	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 	data := apiCtx.Request.Body()
 	builder, err := h.r.validationService.ValidateHouseData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
@@ -62,7 +62,7 @@ func (h *houseImpl) getHouseData(apiCtx *fasthttp.RequestCtx) {
 		internalServerErrorResponce(apiCtx)
 		return
 	}
-	
+
 	flats, err := h.r.houseService.HouseFlats(serviceCtx, uuid)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)

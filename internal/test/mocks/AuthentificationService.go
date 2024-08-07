@@ -15,24 +15,22 @@ type AuthentificationService struct {
 }
 
 // CheckAuthorization provides a mock function with given fields: _a0, _a1
-func (_m *AuthentificationService) CheckAuthorization(_a0 context.Context, _a1 []byte) (models.EnumRole, error) {
+func (_m *AuthentificationService) CheckAuthorization(_a0 context.Context, _a1 []byte) (models.User, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CheckAuthorization")
 	}
 
-	var r0 models.EnumRole
+	var r0 models.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, []byte) (models.EnumRole, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, []byte) (models.User, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, []byte) models.EnumRole); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, []byte) models.User); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(models.EnumRole)
-		}
+		r0 = ret.Get(0).(models.User)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, []byte) error); ok {

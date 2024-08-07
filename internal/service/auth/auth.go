@@ -9,9 +9,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
@@ -46,11 +46,10 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 	default:
 		return "", errors.Wrap(serviceErrors.ServerError{}, "role does not exist")
 	}
-	jstr := fmt.Sprintf(`{"role":"%s"}`, roleStr)
+	jstr := fmt.Sprintf(`{"role":"%s","id":%s}`, roleStr, uuid.New().String())
 	if err := json.Unmarshal([]byte(jstr), &claims); err != nil {
 		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
-	log.Println(claims)
 	token := jwt.NewWithClaims(s.method, claims)
 	tokenString, err := token.SignedString(s.jwtSecretKey)
 	if err != nil {
@@ -60,23 +59,29 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 	return fmt.Sprintf(`{"token":"%s"}`, tokenString), nil
 }
 
-func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.EnumRole, error) {
+func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.User, error) {
 	token, err := jwt.Parse(string(data), func(t *jwt.Token) (interface{}, error) {
 		return s.jwtSecretKey, nil
 	})
 	if err != nil {
-		return nil, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, err.Error())
 	}
 	val, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return nil, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+	}
+	var role models.EnumRole
+	id := ""
+	if id, ok := val["id"].(string); !ok {
+		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
 	}
 	switch val["role"] {
 	case "user":
-		return models.UserRole, nil
+		role = models.UserRole
 	case "moderator":
-		return models.ModeratorRole, nil
+		role = models.ModeratorRole
 	default:
-		return nil, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
 	}
+	return models.User{Id: &id, Role: role}, nil
 }
