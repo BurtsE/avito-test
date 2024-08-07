@@ -72,7 +72,7 @@ func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.U
 	}
 	var role models.EnumRole
 	id := ""
-	if id, ok := val["id"].(string); !ok {
+	if id, ok = val["id"].(string); !ok {
 		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
 	}
 	switch val["role"] {

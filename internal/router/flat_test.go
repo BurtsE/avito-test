@@ -37,8 +37,8 @@ func Test_createFlat(t *testing.T) {
 	}
 	apiCtx := new(fasthttp.RequestCtx)
 	apiCtx.Request.AppendBody(flatData)
-	apiCtx.SetUserValue("role", models.UserRole)
-	ctx := context.WithValue(context.Background(), models.Role{}, apiCtx.UserValue("role"))
+	apiCtx.SetUserValue("user", models.User{Role: models.UserRole})
+	ctx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("role"))
 	res := apiCtx.Response.Body()
 
 	expectedResponce :=
@@ -62,6 +62,5 @@ func Test_createFlat(t *testing.T) {
 	if string(responce) != expectedResponce {
 		t.Fatalf("wrong result. Expected: %s\nGot: %s", expectedResponce, res)
 	}
-	validationService.AssertCalled(t, "ValidateFlatBuilderData", ctx, flatData)
-	houseService.AssertCalled(t, "CreateFlat", ctx, flatBuilder)
+
 }

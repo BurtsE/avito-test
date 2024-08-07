@@ -47,7 +47,7 @@ func (h *houseImpl) createHouse(apiCtx *fasthttp.RequestCtx) {
 	h.r.sendResponce(apiCtx, house)
 }
 func (h *houseImpl) getHouseData(apiCtx *fasthttp.RequestCtx) {
-	serviceCtx := context.WithValue(context.Background(), models.Role{}, apiCtx.UserValue("role"))
+	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 
 	idStr := apiCtx.UserValue("id").(string)
 	uuid, _ := strconv.ParseUint(idStr, 10, 64)

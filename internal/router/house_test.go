@@ -46,9 +46,8 @@ func Test_getHouseData(t *testing.T) {
 		apiCtx := new(fasthttp.RequestCtx)
 		apiCtx.SetUserValue("id", "2")
 		apiCtx.SetUserValue("user", models.User{Role: test.role})
-		ctx := context.WithValue(context.Background(), models.User{Role: test.role}, test.role)
+		ctx := context.WithValue(context.Background(), models.User{}, models.User{Role: test.role})
 
-		apiCtx.SetUserValue("id", "2")
 		validationService.
 			On("ValidateHouse", ctx, id).
 			Return(nil)
