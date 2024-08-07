@@ -8,7 +8,6 @@ import (
 
 func main() {
 	ctx := context.Background()
-
 	a := app.NewApp(ctx)
 	if a == nil {
 		log.Fatalf("failed to create app")
