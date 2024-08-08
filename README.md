@@ -1,10 +1,10 @@
 [![CI](https://github.com/BurtsE/avito-test/actions/workflows/ci.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/ci.yml)
 
-<span style="font-size:1.5em;">Запуск</span>
+# A Запуск
 
 make docker-up либо docker-compose -f deploy/compose.yml up
 
-<span style="font-size:1.5em;">Список необходимых переменных окружения:</span>
+# A Список необходимых переменных окружения:
 
 USER_DB_USER="admin"
 USER_DB_PASSWORD=123
