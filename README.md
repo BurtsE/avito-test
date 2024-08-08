@@ -1,4 +1,5 @@
-[![CI](https://github.com/BurtsE/avito-test/actions/workflows/ci.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/ci.yml)
+[![build](https://github.com/BurtsE/avito-test/actions/workflows/build.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/build.yml)
+[![coverage](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml/badge.svg?event=deployment)](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml)
 
 # Запуск
 
