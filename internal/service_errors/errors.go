@@ -3,25 +3,25 @@ package service_errors
 import "fmt"
 
 type ServerError struct {
-	err error
+	Err error
 }
 
 func (e ServerError) Error() string {
-	return fmt.Sprintf("server error: %v", e.err)
+	return fmt.Sprintf("server error: %v", e.Err)
 }
 
 type AuthError struct {
-	err error
+	Err error
 }
 
 func (e AuthError) Error() string {
-	return fmt.Sprintf("authentification error: %v", e.err)
+	return fmt.Sprintf("authentification error: %v", e.Err)
 }
 
 type ValidationError struct {
-	err error
+	Err error
 }
 
 func (e ValidationError) Error() string {
-	return fmt.Sprintf("data validation error: %v", e.err)
+	return fmt.Sprintf("data validation error: %v", e.Err)
 }

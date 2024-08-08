@@ -9,7 +9,7 @@ import (
 func (r *repository) CreateHouse(ctx context.Context, builder models.HouseBuilder) (*models.House, error) {
 	house := converter.HouseFromHouseBuilder(builder)
 	query := `
-		INSERT INTO houses (adress, construction_date, developer, initialization_date, last_update_time)
+		INSERT INTO houses (street, construction_date, developer, initialization_date, last_update_time)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING uuid
 	`
@@ -24,7 +24,7 @@ func (r *repository) CreateHouse(ctx context.Context, builder models.HouseBuilde
 
 func (r *repository) HouseDesc(ctx context.Context, uuid uint64) (*models.House, error) {
 	query := `
-		SELECT adress, construction_date, developer, initialization_date, last_update_time
+		SELECT street, construction_date, developer, initialization_date, last_update_time
 		FROM houses
 		WHERE uuid=$1
 	`

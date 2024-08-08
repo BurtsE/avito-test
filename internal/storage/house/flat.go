@@ -68,9 +68,11 @@ func (r *repository) UpdateFlatStatus(ctx context.Context, id uint64, status str
 	query := `
 		UPDATE flats
 		SET moderation_status = $2
+		AND moderator_id = $3
 		WHERE id = $1
 	`
-	_, err := r.db.Exec(query, id, status)
+	userId := ctx.Value(models.User{}).(models.User).Id
+	_, err := r.db.Exec(query, id, status, userId)
 	if err != nil {
 		return err
 	}
@@ -85,7 +87,7 @@ func (r *repository) FlatsByHouseId(ctx context.Context, uuid uint64) ([]*models
 			AND house_id=$1
 	`
 	if ctx.Value(models.Role{}) == models.UserRole {
-		query += "AND moderation_status != 'on moderate'"
+		query += "AND moderation_status == 'approved'"
 	}
 	rows, err := r.db.Query(query, &uuid)
 	if err != nil {

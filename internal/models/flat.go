@@ -12,12 +12,13 @@ var (
 )
 
 type Flat struct {
-	Id         uint64           `json:"id"`
-	UnitNumber uint64           `json:"unit_number"`
-	HouseId    uint64           `json:"house_id"`
-	Price      uint64           `json:"price"`
-	RoomNumber byte             `json:"rooms"`
-	Status     ModerationStatus `json:"status"`
+	Id          uint64           `json:"id"`
+	UnitNumber  uint64           `json:"unit_number"`
+	HouseId     uint64           `json:"house_id"`
+	Price       uint64           `json:"price"`
+	RoomNumber  byte             `json:"rooms"`
+	Status      ModerationStatus `json:"status"`
+	ModeratorId string           `json:"moderator_id"`
 }
 
 func (m *Flat) MarshalJSON() ([]byte, error) {

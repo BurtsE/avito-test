@@ -44,7 +44,7 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 	case models.UserRole:
 		roleStr = "user"
 	default:
-		return "", errors.Wrap(serviceErrors.ServerError{}, "role does not exist")
+		return "", serviceErrors.ServerError{Err: errors.New("role does not exist")}
 	}
 	jstr := fmt.Sprintf(`{"role":"%s","id":%s}`, roleStr, uuid.New().String())
 	if err := json.Unmarshal([]byte(jstr), &claims); err != nil {
@@ -64,16 +64,16 @@ func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.U
 		return s.jwtSecretKey, nil
 	})
 	if err != nil {
-		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, err.Error())
+		return models.User{}, serviceErrors.AuthError{Err: err}
 	}
 	val, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+		return models.User{}, serviceErrors.AuthError{Err: err}
 	}
 	var role models.EnumRole
 	id := ""
 	if id, ok = val["id"].(string); !ok {
-		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+		return models.User{}, serviceErrors.AuthError{Err: err}
 	}
 	switch val["role"] {
 	case "user":
@@ -81,7 +81,7 @@ func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.U
 	case "moderator":
 		role = models.ModeratorRole
 	default:
-		return models.User{}, errors.Wrap(serviceErrors.AuthError{}, "invalid token")
+		return models.User{}, serviceErrors.AuthError{Err: errors.New("invalid token")}
 	}
 	return models.User{Id: &id, Role: role}, nil
 }
