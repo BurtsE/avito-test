@@ -39,10 +39,9 @@ func Test_createFlat(t *testing.T) {
 	apiCtx.Request.AppendBody(flatData)
 	apiCtx.SetUserValue("user", models.User{Role: models.UserRole})
 	ctx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
-	res := apiCtx.Response.Body()
 
 	expectedResponce :=
-		`{"id":0,"house_id":12345,"price":10000,"rooms":4,"status":"on moderate"}`
+		`{"id":0,"unit_number":0,"house_id":12345,"price":10000,"rooms":4,"status":"on moderate"}`
 	validationService.
 		On("ValidateFlatBuilderData", ctx, flatData).
 		Return(flatBuilder, nil)
@@ -57,9 +56,10 @@ func Test_createFlat(t *testing.T) {
 	}
 	f.createFlat(apiCtx)
 	responce := apiCtx.Response.Body()
+	t.Log(string(responce))
 	validationService.AssertCalled(t, "ValidateFlatBuilderData", ctx, flatData)
 	houseService.AssertCalled(t, "CreateFlat", ctx, flatBuilder)
 	if string(responce) != expectedResponce {
-		t.Fatalf("wrong result. Expected: %s\nGot: %s", expectedResponce, res)
+		t.Fatalf("wrong result. Expected: %s\nGot: %s", expectedResponce, responce)
 	}
 }
