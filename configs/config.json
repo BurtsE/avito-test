@@ -1,13 +1,13 @@
 {
     "house_db": {
-        "host": "localhost",
+        "host": "house_db",
         "port": "5432",
         "db": "house_db",
         "max_conns": 1,
         "sslmode": "disable"
     },
     "user_db": {
-        "host": " localhost",
+        "host": " user_db",
         "port": "5432",
         "db": "house_db",
         "max_conns": 1,
