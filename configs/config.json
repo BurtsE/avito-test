@@ -1,12 +1,20 @@
 {
-    "postgres": {
+    "house_db": {
         "host": "localhost",
         "port": "5432",
-        "db": "avito-test",
+        "db": "house_db",
+        "max_conns": 1,
+        "sslmode": "disable"
+    },
+    "user_db": {
+        "host": "localhost",
+        "port": "5432",
+        "db": "user_db",
         "max_conns": 1,
         "sslmode": "disable"
     },
     "service": {
-        "port": ":8000"
+        "port": ":8000",
+        "host": "127.0.0.1"
     }
 }
