@@ -3,7 +3,9 @@
 # Запуск
 
 make docker-up 
+
 либо 
+
 docker-compose -f deploy/compose.yml up
 
 # Список необходимых переменных окружения:
