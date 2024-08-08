@@ -1,6 +1,5 @@
 [![build](https://github.com/BurtsE/avito-test/actions/workflows/build.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/build.yml)
-[![coverage](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml/badge.svg?event=deployment)](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml?event=push)
-
+[![coverage](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml?percentage=23)
 # Запуск
 
 make docker-up 
