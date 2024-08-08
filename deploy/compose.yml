@@ -5,20 +5,26 @@ services:
     shm_size: 128mb
     environment:
       - POSTGRES_DB=${HOUSE_DB}
-      - POSTGRES_USER=${USER-DB_USER}
-      - POSTGRES_PASSWORD=${USER-DB_PASSWORD}
+      - POSTGRES_USER=${HOUSE-DB_USER}
+      - POSTGRES_PASSWORD=${HOUSE-DB_PASSWORD}
     volumes:
-      - ./house_db.dump:/docker-entrypoint-initdb.d
-  # user_db:
-  #   image: postgres
-  #   restart: always
-  #   shm_size: 128mb
-  #   environment:
-  #     - POSTGRES_DB=${USER_DB}
-  #     - POSTGRES_USER=${USER_DB_USER}
-  #     - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - ../sql:/docker-entrypoint-initdb.d
+  user_db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      - POSTGRES_DB=${HOUSE_DB}
+      - POSTGRES_USER=${HOUSE-DB_USER}
+      - POSTGRES_PASSWORD=${HOUSE-DB_PASSWORD}
   server:
-
+    environment:
+      - HOUSE_DB=${HOUSE_DB}
+      - HOUSE-DB_USER=${HOUSE-DB_USER}
+      - HOUSE-DB_PASSWORD=${HOUSE-DB_PASSWORD}
+      - USER-DB=${HOUSE_DB}
+      - USER-DB_USER=${HOUSE-DB_USER}
+      - USER-DB_PASSWORD=${HOUSE-DB_PASSWORD}
     build:
       context:    ../
       dockerfile: ./deploy/Dockerfile

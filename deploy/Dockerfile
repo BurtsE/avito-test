@@ -1,6 +1,7 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.22-alpine AS builder
 
 WORKDIR /build
+
 
 
 ADD go.mod .
@@ -14,13 +15,15 @@ COPY internal internal
 
 RUN GOOS=linux go build -o app ./cmd
 
-FROM golang:1.21-alpine
+FROM golang:1.22-alpine
 WORKDIR /root/
 
 COPY configs configs
 
-ENV PG_USER=${HOUSE-DB_USER}
-ENV PG_PASSWORD=${HOUSE-DB_PASSWORD}
+ENV HOUSE-DB_USER=${HOUSE-DB_USER}
+ENV HOUSE-DB_PASSWORD=${HOUSE-DB_PASSWORD}
+ENV USER-DB_USER=${HOUSE-DB_USER}
+ENV USER-DB_PASSWORD=${HOUSE-DB_PASSWORD}
 COPY --from=builder /build/app .
 
 
