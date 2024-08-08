@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -48,7 +47,6 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 		return "", serviceErrors.ServerError{Err: errors.New("role does not exist")}
 	}
 	jstr := fmt.Sprintf(`{"role":"%s","id":"%s"}`, roleStr, uuid.New().String())
-	log.Println(jstr)
 	if err := json.Unmarshal([]byte(jstr), &claims); err != nil {
 		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}

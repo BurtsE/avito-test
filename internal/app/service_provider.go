@@ -47,9 +47,9 @@ func (s *serviceProvider) Config() *config.Config {
 
 func (s *serviceProvider) HouseStorage() storages.HouseStorage {
 	if s.houseStorage == nil {
-		storage, err := houseStorageInstance.NewRepository(s.cfg)
+		storage, err := houseStorageInstance.NewRepository(s.Config())
 		if err != nil {
-			log.Fatalf("could not init storage: %s", err.Error())
+			log.Fatalf("could not init house storage: %s", err.Error())
 		}
 		s.houseStorage = storage
 		s.validationStorage = storage

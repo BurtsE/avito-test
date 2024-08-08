@@ -37,7 +37,6 @@ func (s *service) HouseFlats(ctx context.Context, uuid uint64) ([]*models.Flat, 
 	data, err := s.cache.Get(casheKey)
 	flats := make([]*models.Flat, 0)
 	if err == nil {
-		log.Println("cached")
 		err = json.Unmarshal(data, &flats)
 		if err == nil {
 			return flats, nil
@@ -47,6 +46,7 @@ func (s *service) HouseFlats(ctx context.Context, uuid uint64) ([]*models.Flat, 
 	if err != nil {
 		return nil, serviceErrors.ServerError{Err: err}
 	}
+	log.Println(flats)
 	data, err = json.Marshal(flats)
 	if err != nil {
 		return nil, serviceErrors.ServerError{Err: err}
