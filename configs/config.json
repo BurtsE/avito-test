@@ -7,9 +7,9 @@
         "sslmode": "disable"
     },
     "user_db": {
-        "host": "localhost",
+        "host": " localhost",
         "port": "5432",
-        "db": "user_db",
+        "db": "house_db",
         "max_conns": 1,
         "sslmode": "disable"
     },
