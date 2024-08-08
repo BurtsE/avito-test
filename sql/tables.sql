@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS houses (
     developer   VARCHAR(128) DEFAULT '',
     initialization_date DATE NOT NULL,
     last_update_time TIMESTAMP NOT NULL,
-    flats_number INTEGER NOT NULL DEFAULT 0
+    flats_number INTEGER NOT NULL DEFAULT
 );
 
 CREATE TABLE flats(
