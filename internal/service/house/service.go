@@ -17,7 +17,10 @@ type service struct {
 }
 
 func NewService(houseStorage storage.HouseStorage, cfg *config.Config) *service {
-	cache, _ := bigcache.NewBigCache(bigcache.DefaultConfig(10 * time.Second))
+	cacheCfg := bigcache.DefaultConfig(10 * time.Second)
+	cacheCfg.CleanWindow = 1 * time.Second
+	cache, _ := bigcache.NewBigCache(cacheCfg)
+
 	return &service{
 		houseStorage: houseStorage,
 		cache:        cache,
