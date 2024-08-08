@@ -9,7 +9,7 @@ import (
 
 func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) {
 	query := `
-		SELECT unit_number, price, room_number,house_id, moderation_status 
+		SELECT unit_number, price, room_number,house_id, moderation_status, moderator_id
 		FROM flats
 		WHERE true
 			AND id=$1
@@ -17,7 +17,7 @@ func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) 
 	flat := models.Flat{Id: id}
 	status := ""
 	row := r.db.QueryRow(query, id)
-	err := row.Scan(&flat.UnitNumber, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
+	err := row.Scan(&flat.UnitNumber, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status, &flat.ModeratorId)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder,
 		INSERT INTO flats(unit_number, price, room_number, house_id, moderation_status)
 		VALUES (
 			(SELECT flats_number + 1
-			FROM HOUSES h 
+			FROM houses h 
 			WHERE h.uuid = $3
 			), $1, $2, $3, $4)
 		RETURNING id, unit_number
@@ -67,8 +67,7 @@ func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder,
 func (r *repository) UpdateFlatStatus(ctx context.Context, id uint64, status string) error {
 	query := `
 		UPDATE flats
-		SET moderation_status = $2
-		AND moderator_id = $3
+		SET moderation_status = $2, moderator_id = $3
 		WHERE id = $1
 	`
 	userId := ctx.Value(models.User{}).(models.User).Id

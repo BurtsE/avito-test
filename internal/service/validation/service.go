@@ -27,20 +27,25 @@ func NewService(validationStorage storage.ValidationStorage, cfg *config.Config)
 func (s *service) ValidateFlatStatusData(ctx context.Context, data []byte) (models.FlatStatus, error) {
 	status, err := converter.FlatStatusFromRawData(data)
 	if err != nil {
-		return models.FlatStatus{}, errors.Wrap(serviceErrors.ValidationError{}, err.Error())
+		return models.FlatStatus{}, serviceErrors.ValidationError{Err: err}
 	}
 
 	err = s.ValidateFlat(ctx, *status.Id)
 	if err != nil {
 		return models.FlatStatus{}, err
 	}
+	_, err = converter.ModerationValueFromString(*status.Value)
+	if err != nil {
+		return models.FlatStatus{}, serviceErrors.ValidationError{Err: err}
+	}
+
 	return status, nil
 }
 
 func (s *service) ValidateHouseData(ctx context.Context, data []byte) (models.HouseBuilder, error) {
 	builder, err := converter.HouseBuilderFromRawData(data)
 	if err != nil {
-		return models.HouseBuilder{}, errors.Wrap(serviceErrors.ValidationError{}, err.Error())
+		return models.HouseBuilder{}, serviceErrors.ValidationError{Err: err}
 	}
 	return builder, nil
 }
@@ -48,9 +53,9 @@ func (s *service) ValidateHouseData(ctx context.Context, data []byte) (models.Ho
 func (s *service) ValidateFlatBuilderData(ctx context.Context, data []byte) (models.FlatBuilder, error) {
 	builder, err := converter.FlatBuilderFromRawData(data)
 	if err != nil {
-		return models.FlatBuilder{}, errors.Wrap(serviceErrors.ValidationError{}, err.Error())
+		return models.FlatBuilder{}, serviceErrors.ValidationError{Err: err}
 	}
-	err = s.ValidateHouse(ctx ,*builder.HouseId)
+	err = s.ValidateHouse(ctx, *builder.HouseId)
 	if err != nil {
 		return models.FlatBuilder{}, err
 	}
@@ -60,10 +65,10 @@ func (s *service) ValidateFlatBuilderData(ctx context.Context, data []byte) (mod
 func (s *service) ValidateHouse(ctx context.Context, uuid uint64) error {
 	exists, err := s.validationStorage.HouseExists(ctx, uuid)
 	if err != nil {
-		return errors.Wrap(serviceErrors.ServerError{}, err.Error())
+		return serviceErrors.ServerError{Err: err}
 	}
 	if !exists {
-		return errors.Wrap(serviceErrors.ValidationError{}, "house does not exist")
+		return serviceErrors.ValidationError{Err: err}
 	}
 	return nil
 }

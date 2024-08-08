@@ -20,7 +20,7 @@ func registerFlatApi(r *Router) {
 }
 
 func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
-	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("role"))
+	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 	data := apiCtx.Request.Body()
 	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
@@ -45,7 +45,7 @@ func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
 }
 
 func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
-	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("role"))
+	serviceCtx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 	data := apiCtx.Request.Body()
 	status, err := f.r.validationService.ValidateFlatStatusData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {

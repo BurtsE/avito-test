@@ -5,6 +5,7 @@ import (
 	"avito-test/internal/models"
 	serviceErrors "avito-test/internal/service_errors"
 	"context"
+	"log"
 )
 
 var initialStatus = models.Created
@@ -16,7 +17,8 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 		return flat, serviceErrors.ServerError{Err: err}
 	}
 	userId := ctx.Value(models.User{}).(models.User).Id
-	if flat.Status == models.OnModerate && userId != &flat.ModeratorId {
+	log.Println(flat.Status.String(), *userId, flat.ModeratorId)
+	if flat.Status == models.OnModerate && *userId != flat.ModeratorId {
 		return flat, nil
 	}
 

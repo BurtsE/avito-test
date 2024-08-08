@@ -23,14 +23,9 @@ func (r *repository) FlatExists(ctx context.Context, id uint64) (bool, error) {
 		FROM flats
 		WHERE id = $1
 	`
-	tx, err := r.db.BeginTx(ctx, nil)
+
+	err := r.db.QueryRow(query, id).Scan(&id)
 	if err != nil {
-		tx.Rollback()
-		return false, err
-	}
-	err = tx.QueryRow(query, id).Scan(&id)
-	if err != nil {
-		tx.Rollback()
 		return false, err
 	}
 

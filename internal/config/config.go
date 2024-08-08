@@ -2,7 +2,7 @@ package config
 
 type Config struct {
 	HouseDB `json:"house_db"`
-	UserDB  `json:"user_db,omitempty"`
+	UserDB  `json:"user_db"`
 	Service `json:"service"`
 }
 

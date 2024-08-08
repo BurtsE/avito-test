@@ -38,7 +38,7 @@ func Test_createFlat(t *testing.T) {
 	apiCtx := new(fasthttp.RequestCtx)
 	apiCtx.Request.AppendBody(flatData)
 	apiCtx.SetUserValue("user", models.User{Role: models.UserRole})
-	ctx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("role"))
+	ctx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 	res := apiCtx.Response.Body()
 
 	expectedResponce :=

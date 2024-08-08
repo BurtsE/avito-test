@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -46,14 +47,15 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 	default:
 		return "", serviceErrors.ServerError{Err: errors.New("role does not exist")}
 	}
-	jstr := fmt.Sprintf(`{"role":"%s","id":%s}`, roleStr, uuid.New().String())
+	jstr := fmt.Sprintf(`{"role":"%s","id":"%s"}`, roleStr, uuid.New().String())
+	log.Println(jstr)
 	if err := json.Unmarshal([]byte(jstr), &claims); err != nil {
 		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
 	}
 	token := jwt.NewWithClaims(s.method, claims)
 	tokenString, err := token.SignedString(s.jwtSecretKey)
 	if err != nil {
-		return "", errors.Wrap(serviceErrors.ServerError{}, err.Error())
+		return "", serviceErrors.ServerError{Err: err}
 	}
 
 	return fmt.Sprintf(`{"token":"%s"}`, tokenString), nil
