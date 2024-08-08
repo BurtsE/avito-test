@@ -17,8 +17,8 @@ type HouseDB struct {
 	DB       string `json:"db"`
 	MaxConns int    `json:"max_conns"`
 	Sslmode  string `json:"sslmode"`
-	User     string `env:"HOUSE-DB_USER,notEmpty"`
-	Password string `env:"HOUSE-DB_PASSWORD,notEmpty"`
+	User     string `env:"HOUSE_DB_USER,notEmpty"`
+	Password string `env:"HOUSE_DB_PASSWORD,notEmpty"`
 }
 type UserDB struct {
 	Host     string `json:"host"`
@@ -26,6 +26,6 @@ type UserDB struct {
 	DB       string `json:"db"`
 	MaxConns int    `json:"max_conns"`
 	Sslmode  string `json:"sslmode"`
-	User     string `env:"USER-DB_USER,notEmpty"`
-	Password string `env:"USER-DB_PASSWORD,notEmpty"`
+	User     string `env:"USER_DB_USER,notEmpty"`
+	Password string `env:"USER_DB_PASSWORD,notEmpty"`
 }
