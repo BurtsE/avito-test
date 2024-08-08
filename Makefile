@@ -12,7 +12,7 @@ runf:
 .PHONY: docker-up## Start application (requires running Compose services)
 docker-up:
 	@echo Starting application...
-	@dotenv -f ./.env run -- env ${dev-env-vars} docker-compose -f deploy/compose.yml  up
+	@dotenv -f ./.env run -- env ${dev-env-vars} docker-compose -f deploy/compose.yml up
 
 .PHONY: docker-down
 docker-down:
