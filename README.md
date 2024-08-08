@@ -8,8 +8,8 @@ docker-compose -f deploy/compose.yml up
 
 # Список необходимых переменных окружения:
 
-USER_DB_USER="admin"\n
-USER_DB_PASSWORD=123\n
-HOUSE_DB_USER="admin"\n
-HOUSE_DB_PASSWORD=123\n
-HOUSE_DB="house_db"\n
+* USER_DB_USER="admin"
+* USER_DB_PASSWORD=123
+* HOUSE_DB_USER="admin"
+* HOUSE_DB_PASSWORD=123
+* HOUSE_DB="house_db"
