@@ -60,28 +60,5 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 }
 
 func (s *service) RegisterUser(ctx context.Context, user models.User) (string, error) {
-	token, err := jwt.Parse(string(data), func(t *jwt.Token) (interface{}, error) {
-		return s.jwtSecretKey, nil
-	})
-	if err != nil {
-		return models.User{}, serviceErrors.AuthError{Err: err}
-	}
-	val, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
-		return models.User{}, serviceErrors.AuthError{Err: err}
-	}
-	var role models.EnumRole
-	id := ""
-	if id, ok = val["id"].(string); !ok {
-		return models.User{}, serviceErrors.AuthError{Err: err}
-	}
-	switch val["role"] {
-	case "user":
-		role = models.UserRole
-	case "moderator":
-		role = models.ModeratorRole
-	default:
-		return models.User{}, serviceErrors.AuthError{Err: errors.New("invalid token")}
-	}
-	return models.User{Id: &id, Role: role}, nil
+	panic("unimplemented")
 }

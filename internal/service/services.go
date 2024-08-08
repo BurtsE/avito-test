@@ -26,5 +26,4 @@ type ValidationService interface {
 type AuthentificationService interface {
 	DummyAuthorize(context.Context, models.EnumRole) (string, error)
 	CheckAuthorization(context.Context, []byte) (models.User, error)
-	RegisterUser(context.Context, models.User) (string, error)
 }

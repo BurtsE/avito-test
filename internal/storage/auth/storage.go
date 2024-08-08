@@ -43,9 +43,5 @@ func (r *repository) User(ctx context.Context) {
 
 // RegisterUser implements storage.UserStorage.
 func (r *repository) RegisterUser(ctx context.Context, user models.User) {
-	query := `
-		INSERT INTO users(user_id, email, pass, user_type)
-		VALUES($1,$2,$3,$4)
-	`
-	r.db.Exec(query, user.Id, user.Password, user.Role)
+	panic("unimplemented")
 }
