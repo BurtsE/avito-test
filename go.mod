@@ -3,6 +3,7 @@ module avito-test
 go 1.22.5
 
 require (
+	github.com/allegro/bigcache v1.2.1
 	github.com/caarlos0/env/v11 v11.1.0
 	github.com/fasthttp/router v1.5.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/allegro/bigcache v1.2.1 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
