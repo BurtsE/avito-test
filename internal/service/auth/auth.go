@@ -59,7 +59,7 @@ func (s *service) DummyAuthorize(ctx context.Context, role models.EnumRole) (str
 	return fmt.Sprintf(`{"token":"%s"}`, tokenString), nil
 }
 
-func (s *service) CheckAuthorization(ctx context.Context, data []byte) (models.User, error) {
+func (s *service) RegisterUser(ctx context.Context, user models.User) (string, error) {
 	token, err := jwt.Parse(string(data), func(t *jwt.Token) (interface{}, error) {
 		return s.jwtSecretKey, nil
 	})

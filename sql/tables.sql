@@ -17,3 +17,10 @@ CREATE TABLE flats(
     house_id INTEGER NOT NULL REFERENCES houses(uuid),
     moderator_id VARCHAR(128) default ''
 );
+
+CREATE TABLE users(
+    user_id  VARCHAR(128) NOT NULL,
+    email VARCHAR(128) NOT NULL,
+    pass VARCHAR(128) NOT NULL,
+    user_type VARCHAR(128) NOT NULL
+);
