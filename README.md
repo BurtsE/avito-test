@@ -1,5 +1,5 @@
 [![build](https://github.com/BurtsE/avito-test/actions/workflows/build.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/build.yml)
-[![coverage](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml/badge.svg)][23](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml)
+[![coverage](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml/badge.svg)](https://github.com/BurtsE/avito-test/actions/workflows/coverage.yml)
 # Запуск
 
 make docker-up 
