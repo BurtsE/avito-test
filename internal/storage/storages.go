@@ -11,7 +11,7 @@ type HouseStorage interface {
 
 	Flat(context.Context, uint64) (*models.Flat, error)
 	CreateFlat(context.Context, models.FlatBuilder, string) (*models.Flat, error)
-	UpdateFlatStatus(context.Context, uint64, string) error
+	UpdateFlatStatus(context.Context, uint64, string) (error)
 
 	FlatsByHouseId(context.Context, uint64) ([]*models.Flat, error)
 }
@@ -22,6 +22,6 @@ type ValidationStorage interface {
 }
 
 type UserStorage interface {
-	User(context.Context, models.User) (string, error)
+	User(context.Context)
 	RegisterUser(context.Context)
 }

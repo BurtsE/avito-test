@@ -2,7 +2,6 @@ package auth
 
 import (
 	"avito-test/internal/config"
-	"avito-test/internal/models"
 	def "avito-test/internal/storage"
 	"context"
 	"database/sql"
@@ -42,6 +41,6 @@ func (r *repository) User(ctx context.Context) {
 }
 
 // RegisterUser implements storage.UserStorage.
-func (r *repository) RegisterUser(ctx context.Context, user models.User) {
+func (r *repository) RegisterUser(ctx context.Context) {
 	panic("unimplemented")
 }
