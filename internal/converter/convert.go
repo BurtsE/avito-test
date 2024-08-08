@@ -100,18 +100,3 @@ func ModerationValueFromString(s string) (models.ModerationStatus, error) {
 		return nil, errUnknownStatus
 	}
 }
-
-// func StringFromModerationValue(status models.ModerationStatus) (string, error) {
-// 	switch status {
-// 	case models.Approved:
-// 		return "approved", nil
-// 	case models.Created:
-// 		return "created", nil
-// 	case models.OnModerate:
-// 		return "on moderate", nil
-// 	case models.Declined:
-// 		return "declined", nil
-// 	default:
-// 		return "", errUnknownStatus
-// 	}
-// }

@@ -62,5 +62,4 @@ func Test_createFlat(t *testing.T) {
 	if string(responce) != expectedResponce {
 		t.Fatalf("wrong result. Expected: %s\nGot: %s", expectedResponce, res)
 	}
-
 }

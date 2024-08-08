@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
 )
 
 var (
@@ -21,7 +22,7 @@ type Flat struct {
 	ModeratorId string           `json:"moderator_id"`
 }
 
-func (m *Flat) MarshalJSON() ([]byte, error) {
+func (f *Flat) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		UnitNumber uint64 `json:"id"`
 		HouseId    uint64 `json:"house_id"`
@@ -29,12 +30,46 @@ func (m *Flat) MarshalJSON() ([]byte, error) {
 		RoomNumber byte   `json:"rooms"`
 		Status     string `json:"status"`
 	}{
-		UnitNumber: m.UnitNumber,
-		HouseId:    m.HouseId,
-		Price:      m.Price,
-		RoomNumber: m.RoomNumber,
-		Status:     m.Status.String(),
+		UnitNumber: f.UnitNumber,
+		HouseId:    f.HouseId,
+		Price:      f.Price,
+		RoomNumber: f.RoomNumber,
+		Status:     f.Status.String(),
 	})
+}
+func (f *Flat) UnmarshalJSON(data []byte) error {
+	flat := struct {
+		Id          uint64 `json:"id"`
+		UnitNumber  uint64 `json:"unit_number"`
+		HouseId     uint64 `json:"house_id"`
+		Price       uint64 `json:"price"`
+		RoomNumber  byte   `json:"rooms"`
+		Status      string `json:"status"`
+		ModeratorId string `json:"moderator_id"`
+	}{}
+	err := json.Unmarshal(data, &flat)
+	if err != nil {
+		return err
+	}
+	switch flat.Status {
+	case "on moderate":
+		f.Status = OnModerate
+	case "created":
+		f.Status = Created
+	case "approved":
+		f.Status = Approved
+	case "declined":
+		f.Status = Declined
+	default:
+		return errors.New("unknown status")
+	}
+	f.Id = flat.Id
+	f.HouseId = flat.HouseId
+	f.Price = flat.Price
+	f.RoomNumber = flat.RoomNumber
+	f.ModeratorId = flat.ModeratorId
+	f.UnitNumber = flat.UnitNumber
+	return nil
 }
 
 type ModerationStatus interface {
