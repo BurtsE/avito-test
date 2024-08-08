@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: golang:1.22-alpine
+    runs-on: ubuntu-latest
 
     steps:
     - name: Check out code
