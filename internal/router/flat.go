@@ -25,11 +25,13 @@ func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
 	flatBuilder, err := f.r.validationService.ValidateFlatBuilderData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "неправильный формат json")
 		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
@@ -38,6 +40,7 @@ func (f *flatImpl) createFlat(apiCtx *fasthttp.RequestCtx) {
 
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
@@ -50,11 +53,13 @@ func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
 	status, err := f.r.validationService.ValidateFlatStatusData(serviceCtx, data)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка прав доступа")
 		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
@@ -62,6 +67,7 @@ func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
 	flat, err := f.r.houseService.UpdateFlatStatus(serviceCtx, status)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		f.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}

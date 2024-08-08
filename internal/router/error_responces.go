@@ -13,7 +13,7 @@ func internalServerErrorResponce(ctx *fasthttp.RequestCtx) {
 		"message": %s,
 		"request_id": %d,
 		"code": %d
-	}`, "что-то пошло не так", ctx.ID(), 500))
+	}`, ctx.UserValue("errorMessage"), ctx.ID(), 500))
 	ctx.Response.Header.Add("Retry-After", time.Minute.String())
 }
 

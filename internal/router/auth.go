@@ -31,6 +31,7 @@ func (a *authImpl) dummyLogin(apiCtx *fasthttp.RequestCtx) {
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		a.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "неправильный формат json")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
@@ -38,6 +39,7 @@ func (a *authImpl) dummyLogin(apiCtx *fasthttp.RequestCtx) {
 	responce, err := a.r.authService.DummyAuthorize(serviceCtx, role)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		a.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка авторизации")
 		internalServerErrorResponce(apiCtx)
 		return
 	}

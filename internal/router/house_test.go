@@ -22,7 +22,7 @@ func Test_getHouseData(t *testing.T) {
 			flats: []*models.Flat{
 				{Status: models.Approved},
 			},
-			result: `[{"id":0,"house_id":0,"price":0,"rooms":0,"status":"approved"}]`,
+			result: `[{"id":0,"unit_number":0,"house_id":0,"price":0,"rooms":0,"status":"approved"}]`,
 		},
 		{
 			role: models.ModeratorRole,
@@ -31,7 +31,7 @@ func Test_getHouseData(t *testing.T) {
 				{Status: models.OnModerate},
 				{Status: models.Created},
 			},
-			result: `[{"id":0,"house_id":0,"price":0,"rooms":0,"status":"approved"},{"id":0,"house_id":0,"price":0,"rooms":0,"status":"on moderate"},{"id":0,"house_id":0,"price":0,"rooms":0,"status":"created"}]`,
+			result: `[{"id":0,"unit_number":0,"house_id":0,"price":0,"rooms":0,"status":"approved"},{"id":0,"unit_number":0,"house_id":0,"price":0,"rooms":0,"status":"on moderate"},{"id":0,"unit_number":0,"house_id":0,"price":0,"rooms":0,"status":"created"}]`,
 		},
 	}
 	houseService := mocks.NewHouseService(t)

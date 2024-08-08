@@ -16,11 +16,13 @@ func (r *Router) UserAccess(handler fasthttp.RequestHandler) fasthttp.RequestHan
 		user, err := r.authService.CheckAuthorization(serviceCtx, token)
 		if errors.As(err, &serviceErrors.ServerError{}) {
 			r.logger.Println(err)
+			apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 			internalServerErrorResponce(apiCtx)
 			return
 		}
 		if errors.As(err, &serviceErrors.AuthError{}) {
 			r.logger.Println(err)
+			apiCtx.SetUserValue("errorMessage", "ошибка авторизации")
 			unAuthorized(apiCtx)
 			return
 		}

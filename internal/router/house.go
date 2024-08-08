@@ -54,11 +54,13 @@ func (h *houseImpl) getHouseData(apiCtx *fasthttp.RequestCtx) {
 	err := h.r.validationService.ValidateHouse(serviceCtx, uuid)
 	if errors.As(err, &serviceErrors.ValidationError{}) {
 		h.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "неправильный формат json")
 		invalidDataResponce(apiCtx)
 		return
 	}
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
@@ -66,6 +68,7 @@ func (h *houseImpl) getHouseData(apiCtx *fasthttp.RequestCtx) {
 	flats, err := h.r.houseService.HouseFlats(serviceCtx, uuid)
 	if errors.As(err, &serviceErrors.ServerError{}) {
 		h.r.logger.Println(err)
+		apiCtx.SetUserValue("errorMessage", "ошибка сервера")
 		internalServerErrorResponce(apiCtx)
 		return
 	}
