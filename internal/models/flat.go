@@ -41,13 +41,13 @@ func (f *Flat) MarshalJSON() ([]byte, error) {
 }
 func (f *Flat) UnmarshalJSON(data []byte) error {
 	flat := struct {
-		Id          uint64 `json:"id"`
-		UnitNumber  uint64 `json:"unit_number"`
-		HouseId     uint64 `json:"house_id"`
-		Price       uint64 `json:"price"`
-		RoomNumber  byte   `json:"rooms"`
-		Status      string `json:"status"`
-		ModeratorId string `json:"moderator_id"`
+		Id         uint64 `json:"id"`
+		UnitNumber uint64 `json:"unit_number"`
+		HouseId    uint64 `json:"house_id"`
+		Price      uint64 `json:"price"`
+		RoomNumber byte   `json:"rooms"`
+		Status     string `json:"status"`
+		// ModeratorId string `json:"moderator_id"`
 	}{}
 	err := json.Unmarshal(data, &flat)
 	if err != nil {
@@ -69,7 +69,7 @@ func (f *Flat) UnmarshalJSON(data []byte) error {
 	f.HouseId = flat.HouseId
 	f.Price = flat.Price
 	f.RoomNumber = flat.RoomNumber
-	f.ModeratorId = flat.ModeratorId
+	// f.ModeratorId = flat.ModeratorId
 	f.UnitNumber = flat.UnitNumber
 	return nil
 }

@@ -72,5 +72,5 @@ func (f *flatImpl) changeModerationType(apiCtx *fasthttp.RequestCtx) {
 		return
 	}
 
-	f.r.sendResponce(apiCtx, flat)
+	f.r.sendResponce(apiCtx, &flat)
 }
