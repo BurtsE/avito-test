@@ -9,7 +9,7 @@ import (
 
 var initialStatus = models.Created
 
-func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatStatus) (*models.Flat, error) {
+func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatStatus) (models.Flat, error) {
 
 	flat, err := s.houseStorage.Flat(ctx, *flatStatus.Id)
 	if err != nil {
@@ -22,20 +22,20 @@ func (s *service) UpdateFlatStatus(ctx context.Context, flatStatus models.FlatSt
 
 	err = s.houseStorage.UpdateFlatStatus(ctx, *flatStatus.Id, *flatStatus.Value)
 	if err != nil {
-		return nil, serviceErrors.ServerError{Err: err}
+		return flat, serviceErrors.ServerError{Err: err}
 	}
 
 	flat.Status, err = converter.ModerationValueFromString(*flatStatus.Value)
 	if err != nil {
-		return nil, serviceErrors.ServerError{Err: err}
+		return flat, serviceErrors.ServerError{Err: err}
 	}
 	return flat, nil
 }
 
-func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder) (*models.Flat, error) {
+func (s *service) CreateFlat(ctx context.Context, flatBuilder models.FlatBuilder) (models.Flat, error) {
 	flat, err := s.houseStorage.CreateFlat(ctx, flatBuilder, initialStatus.String())
 	if err != nil {
-		return nil, serviceErrors.ServerError{Err: err}
+		return flat, serviceErrors.ServerError{Err: err}
 	}
 	flat.Status = initialStatus
 	return flat, nil
