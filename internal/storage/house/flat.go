@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) {
+func (r *repository) Flat(ctx context.Context, id uint64) (models.Flat, error) {
 	query := `
 		SELECT unit_number, price, room_number,house_id, moderation_status, moderator_id
 		FROM flats
@@ -19,16 +19,16 @@ func (r *repository) Flat(ctx context.Context, id uint64) (*models.Flat, error) 
 	row := r.db.QueryRow(query, id)
 	err := row.Scan(&flat.UnitNumber, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status, &flat.ModeratorId)
 	if err != nil {
-		return nil, err
+		return flat, err
 	}
 	flat.Status, err = converter.ModerationValueFromString(status)
 	if err != nil {
-		return nil, err
+		return flat, err
 	}
-	return &flat, nil
+	return flat, nil
 }
 
-func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder, status string) (*models.Flat, error) {
+func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder, status string) (models.Flat, error) {
 	flat := converter.FlatFromFlatBuilder(builder)
 	query := `
 		INSERT INTO flats(unit_number, price, room_number, house_id, moderation_status)
@@ -41,13 +41,13 @@ func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder,
 	`
 	tx, err := r.db.Begin()
 	if err != nil {
-		return nil, err
+		return flat, err
 	}
 	defer tx.Rollback()
 	row := tx.QueryRow(query, &flat.Price, &flat.RoomNumber, &flat.HouseId, &status)
 	err = row.Scan(&flat.Id, &flat.UnitNumber)
 	if err != nil {
-		return nil, err
+		return flat, err
 	}
 	query = `
 		UPDATE houses
@@ -56,12 +56,12 @@ func (r *repository) CreateFlat(ctx context.Context, builder models.FlatBuilder,
 	`
 	_, err = tx.Exec(query, builder.HouseId, time.Now())
 	if err != nil {
-		return nil, err
+		return flat, err
 	}
 	if err := tx.Commit(); err != nil {
-		return nil, err
+		return flat, err
 	}
-	return &flat, nil
+	return flat, nil
 }
 
 func (r *repository) UpdateFlatStatus(ctx context.Context, id uint64, status string) error {

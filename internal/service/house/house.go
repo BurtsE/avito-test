@@ -10,18 +10,19 @@ import (
 	"strconv"
 )
 
-func (s *service) HouseDesc(ctx context.Context, uuid uint64) (*models.House, error) {
+
+func (s *service) HouseDesc(ctx context.Context, uuid uint64) (models.House, error) {
 	house, err := s.houseStorage.HouseDesc(ctx, uuid)
 	if err != nil {
-		return nil, serviceErrors.ServerError{Err: err}
+		return house, serviceErrors.ServerError{Err: err}
 	}
 	return house, nil
 }
 
-func (s *service) CreateHouse(ctx context.Context, builder models.HouseBuilder) (*models.House, error) {
+func (s *service) CreateHouse(ctx context.Context, builder models.HouseBuilder) (models.House, error) {
 	house, err := s.houseStorage.CreateHouse(ctx, builder)
 	if err != nil {
-		return nil, serviceErrors.ServerError{Err: err}
+		return house, serviceErrors.ServerError{Err: err}
 	}
 	return house, nil
 }

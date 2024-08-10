@@ -15,24 +15,22 @@ type HouseService struct {
 }
 
 // CreateFlat provides a mock function with given fields: _a0, _a1
-func (_m *HouseService) CreateFlat(_a0 context.Context, _a1 models.FlatBuilder) (*models.Flat, error) {
+func (_m *HouseService) CreateFlat(_a0 context.Context, _a1 models.FlatBuilder) (models.Flat, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateFlat")
 	}
 
-	var r0 *models.Flat
+	var r0 models.Flat
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.FlatBuilder) (*models.Flat, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.FlatBuilder) (models.Flat, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.FlatBuilder) *models.Flat); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.FlatBuilder) models.Flat); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Flat)
-		}
+		r0 = ret.Get(0).(models.Flat)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.FlatBuilder) error); ok {
@@ -45,24 +43,22 @@ func (_m *HouseService) CreateFlat(_a0 context.Context, _a1 models.FlatBuilder) 
 }
 
 // CreateHouse provides a mock function with given fields: _a0, _a1
-func (_m *HouseService) CreateHouse(_a0 context.Context, _a1 models.HouseBuilder) (*models.House, error) {
+func (_m *HouseService) CreateHouse(_a0 context.Context, _a1 models.HouseBuilder) (models.House, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateHouse")
 	}
 
-	var r0 *models.House
+	var r0 models.House
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.HouseBuilder) (*models.House, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.HouseBuilder) (models.House, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.HouseBuilder) *models.House); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.HouseBuilder) models.House); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.House)
-		}
+		r0 = ret.Get(0).(models.House)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.HouseBuilder) error); ok {
@@ -75,24 +71,22 @@ func (_m *HouseService) CreateHouse(_a0 context.Context, _a1 models.HouseBuilder
 }
 
 // HouseDesc provides a mock function with given fields: _a0, _a1
-func (_m *HouseService) HouseDesc(_a0 context.Context, _a1 uint64) (*models.House, error) {
+func (_m *HouseService) HouseDesc(_a0 context.Context, _a1 uint64) (models.House, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for HouseDesc")
 	}
 
-	var r0 *models.House
+	var r0 models.House
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint64) (*models.House, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) (models.House, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uint64) *models.House); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) models.House); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.House)
-		}
+		r0 = ret.Get(0).(models.House)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
@@ -135,24 +129,22 @@ func (_m *HouseService) HouseFlats(_a0 context.Context, _a1 uint64) ([]*models.F
 }
 
 // UpdateFlatStatus provides a mock function with given fields: _a0, _a1
-func (_m *HouseService) UpdateFlatStatus(_a0 context.Context, _a1 models.FlatStatus) (*models.Flat, error) {
+func (_m *HouseService) UpdateFlatStatus(_a0 context.Context, _a1 models.FlatStatus) (models.Flat, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateFlatStatus")
 	}
 
-	var r0 *models.Flat
+	var r0 models.Flat
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.FlatStatus) (*models.Flat, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.FlatStatus) (models.Flat, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, models.FlatStatus) *models.Flat); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, models.FlatStatus) models.Flat); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Flat)
-		}
+		r0 = ret.Get(0).(models.Flat)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, models.FlatStatus) error); ok {

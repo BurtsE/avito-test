@@ -6,11 +6,11 @@ import (
 )
 
 type HouseService interface {
-	CreateHouse(context.Context, models.HouseBuilder) (*models.House, error)
-	HouseDesc(context.Context, uint64) (*models.House, error)
+	CreateHouse(context.Context, models.HouseBuilder) (models.House, error)
+	HouseDesc(context.Context, uint64) (models.House, error)
 
-	CreateFlat(context.Context, models.FlatBuilder) (*models.Flat, error)
-	UpdateFlatStatus(context.Context, models.FlatStatus) (*models.Flat, error)
+	CreateFlat(context.Context, models.FlatBuilder) (models.Flat, error)
+	UpdateFlatStatus(context.Context, models.FlatStatus) (models.Flat, error)
 
 	HouseFlats(context.Context, uint64) ([]*models.Flat, error)
 }

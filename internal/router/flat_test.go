@@ -41,14 +41,14 @@ func Test_createFlat(t *testing.T) {
 	ctx := context.WithValue(context.Background(), models.User{}, apiCtx.UserValue("user"))
 
 	expectedResponce :=
-		`{"id":0,"unit_number":0,"house_id":12345,"price":10000,"rooms":4,"status":"on moderate"}`
+		`{"id":0,"unit_number":0,"house_id":12345,"price":10000,"rooms":4,"status":{"ModerationStatus":null},"moderator_id":""}`
 	validationService.
 		On("ValidateFlatBuilderData", ctx, flatData).
 		Return(flatBuilder, nil)
 
 	houseService.
 		On("CreateFlat", ctx, flatBuilder).
-		Return(&flat, nil)
+		Return(flat, nil)
 
 	router := NewRouter(logrus.New(), &config.Config{}, houseService, validationService, authService)
 	f := &flatImpl{
