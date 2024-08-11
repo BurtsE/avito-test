@@ -3748,6 +3748,7 @@ COPY public.flats (id, unit_number, price, room_number, moderation_status, house
 12596172	7	10000	4	created	101277	
 12596173	8	10000	4	created	101277	
 12596174	9	10000	4	created	101277	
+12596185	1	10000	4	created	101279	6a72ed21-79f3-4cec-b1c6-05471de635fd
 12532079	7	10011	5	created	100781	
 12532113	8	11667	2	created	100781	
 12532154	9	12351	2	created	100781	
@@ -64606,6 +64607,7 @@ COPY public.flats (id, unit_number, price, room_number, moderation_status, house
 
 COPY public.houses (uuid, street, construction_date, developer, initialization_date, last_update_time, flats_number) FROM stdin;
 101276	Лесная улица, 8, Москва, 125196	1999-11-30	Мэрия города	2024-08-08	2024-08-08 15:18:33.331257	3
+101279	Лесная улица, 8, Москва, 125196	1999-11-30	Мэрия города	2024-08-10	2024-08-10 16:29:01.29439	1
 100798	street # 4, 2, Moscow	2023-11-30	mayor's office	2024-08-08	2024-08-08 13:33:57.256409	123
 100737	street # 23, 1, Moscow	2023-11-30	mayor's office	2024-08-08	2024-08-08 13:33:55.936067	108
 100778	street # 37, 1, Moscow	2023-11-30	mayor's office	2024-08-08	2024-08-08 13:33:56.093153	113
@@ -65157,14 +65159,14 @@ COPY public.houses (uuid, street, construction_date, developer, initialization_d
 -- Name: flats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.flats_id_seq', 12596184, true);
+SELECT pg_catalog.setval('public.flats_id_seq', 12596185, true);
 
 
 --
 -- Name: houses_uuid_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.houses_uuid_seq', 101278, true);
+SELECT pg_catalog.setval('public.houses_uuid_seq', 101279, true);
 
 
 --
@@ -65173,6 +65175,13 @@ SELECT pg_catalog.setval('public.houses_uuid_seq', 101278, true);
 
 ALTER TABLE ONLY public.houses
     ADD CONSTRAINT houses_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: house_id_index; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX house_id_index ON public.flats USING hash (house_id);
 
 
 --
