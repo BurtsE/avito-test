@@ -7,6 +7,10 @@ make docker-up
 
 docker-compose -f deploy/compose.yml up
 
+Большой дамп БД не помещается в Git, можно дополнить ее командой make runf
+
+Сервис предоставляет API, описанное в swagger, по адресу localhost и порту 8000
+
 # Список необходимых переменных окружения:
 
 * USER_DB_USER="admin"
